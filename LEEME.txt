@@ -1,0 +1,19 @@
+En este archivo les voy a dejar los comandos en el orden que deben de ejecutar,
+para que lo que va en el proyecto no les marque error:
+
+Tengan presente tener instalado Node.js , Typescript y por ende JavaScript.
+
+Nota: A la hora de escribir codigo tengan en cuenta que estamos desarrollando en el entorno de ejecucion Node.js, Usando una base de datos PosgrSQL, libreria de interfaces graficas de React, el framework de tailwind basado en css y Typescript
+
+PASOS NORMALES 
+
+1.  Con el proyecto abierto en VSCO van a dar Ctr + Shift + ñ  (asegurense que la terminal sea cmd, No PowerShell)
+2.  Ejecuta " npm i " o " npm install " ( ojo es sin comillas y ya con el Node y Typescript instalado en el PC)
+3.  Cuando quieran correr algun cambio o codigo usen  " npm run dev "  (Ojo aun no lo pueden hacer en esta estructura porque faltan completar los app e index)
+4.  Me avisan porfa antes de hacer cualquier Merge para evitar errores
+
+SI NO FUNCIONA CON LOS PASOS NORMALES 
+
+1. En la terminal van a ejecutar " npm init -y " (Esto les crea unos archivo json)
+2. Luego ejecutan " npm i react react-dom @radix-ui/react-slot class-variance-authority clsx tailwind-merge " (Esto instala la libreria de React)
+3. ejecutan " npm i " (instala node y dependencias)
