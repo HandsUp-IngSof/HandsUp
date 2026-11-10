@@ -1,4 +1,12 @@
-import {Login} from "@/paginas/Login";
-import {Registro}from "@/paginas/Registro";
-import {Configuracion} from "@/paginas/Configuracion";
+import { Login } from "./paginas/Login";
+
+export function App() {
+    return (
+    <main>
+        <Login />
+    </main>
+    );
+}
+
+export default App;
 
