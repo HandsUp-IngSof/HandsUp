@@ -1,0 +1,15 @@
+# Dependencias (se generan con npm install)
+node_modules/
+
+# Salida de compilacion
+dist/
+
+# Registros
+*.log
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+
+# Configuracion local de Claude
+.claude/

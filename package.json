@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:conexion": "node src/lib/testConexion.mjs"
   },
   "repository": {
     "type": "git",
@@ -18,11 +19,13 @@
   "homepage": "https://github.com/HandsUp-IngSof/HandsUp#readme",
   "dependencies": {
     "@radix-ui/react-slot": "^1.5.0",
+    "@supabase/supabase-js": "^2.119.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.71.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.5",
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
