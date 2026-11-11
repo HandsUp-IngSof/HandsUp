@@ -1,11 +1,9 @@
-import React from "react";
-import { useState } from "react";
-import { RoleSelector } from "@/componentes/UI/RoleSelector"; 
-import { Button } from "@/componentes/UI/Boton";
-import { Input } from "@/componentes/UI/Input";
-import { Mail } from "lucide-react";
-import { Eye, EyeOff, ArrowRight } from "lucide-react";
-
+import React, { useState } from "react";
+import { Mail, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { RoleSelector } from "../componentes/UI/RoleSelector";
+import { Button } from "../componentes/UI/Boton";
+import { Input } from "../componentes/UI/Input";
+import isotipo from "../recursos/isotipo.png";
 
 interface CampoProps {
     id: string;
@@ -70,7 +68,7 @@ export function Registro() {
             <div className="w-full max-w-md flex flex-col items-center">
                 {/* Logo */}
                 <div className="flex items-center gap-2 mb-6">
-                    <img src="/logo-handsup.png" alt="" className="h-10 w-10 rounded-xl" />
+                    <img src={isotipo} alt="" className="h-10 w-10 rounded-xl" />
                     <span className="text-3xl font-bold font-['Fredoka',sans-serif] text-[#14848D]">
                         hands<span className="text-[#B5246E]">Up</span>
                     </span>
