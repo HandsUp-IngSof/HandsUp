@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Mail, Eye, EyeOff, ArrowRight, ShieldCheck, HelpCircle, CheckCircle2 } from "lucide-react";
 
-import { Button } from "../componentes/UI/Boton";
-import { Input } from "../componentes/UI/Input";
-import { RoleSelector } from "../componentes/UI/RoleSelector";
+import { Button } from "@/componentes/UI/Boton";
+import { Input } from "@/componentes/UI/Input";
+import { RoleSelector } from "@/componentes/UI/RoleSelector";
 
-import isotipo from "../recursos/isotipo.png";
+import isotipo from "@/recursos/isotipo.png";
 
 export function Login() {
   const [role, setRole] = useState<"estudiante" | "docente">("estudiante");
@@ -187,9 +188,9 @@ export function Login() {
 
           <p className="text-center text-xs text-slate-500 mt-6">
             ¿Es tu primera vez?{" "}
-            <a href="#register" className="font-bold text-[#14848D] hover:underline">
+            <Link to="/registro" className="font-bold text-[#14848D] hover:underline">
               Crea tu cuenta
-            </a>
+            </Link>
           </p>
 
           <div className="mt-8 flex items-center gap-3 bg-[#C5E5E4]/40 border border-[#14848D]/20 rounded-xl p-3.5">

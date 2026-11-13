@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Mail, Eye, EyeOff, ArrowRight } from "lucide-react";
-import { RoleSelector } from "../componentes/UI/RoleSelector";
-import { Button } from "../componentes/UI/Boton";
-import { Input } from "../componentes/UI/Input";
-import isotipo from "../recursos/isotipo.png";
+import { RoleSelector } from "@/componentes/UI/RoleSelector";
+import { Button } from "@/componentes/UI/Boton";
+import { Input } from "@/componentes/UI/Input";
+import isotipo from "@/recursos/isotipo.png";
 
 interface CampoProps {
     id: string;
@@ -42,7 +43,7 @@ export function Registro() {
     const [verPassword, setVerPassword] = useState(false);
     const [verConfirmar, setVerConfirmar] = useState(false);
 
-    const passwordValida = /^(?=.[A-Za-z])(?=.\d).{8,}$/.test(password);
+    const passwordValida = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(password);
     const noCoinciden = confirmarPassword.length > 0 && confirmarPassword !== password;
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -161,9 +162,9 @@ export function Registro() {
 
                 <p className="mt-6 text-sm text-[#5E7F82]">
                     ¿Ya tienes una cuenta?{" "}
-                    <a href="/login" className="font-bold text-[#14848D]">
+                    <Link to="/login" className="font-bold text-[#14848D]">
                         Inicia sesión
-                    </a>
+                    </Link>
                 </p>
                 <p className="mt-5 text-xs text-[#7C9496]">
                     © 2026 handsUp · Aprender nos conecta.
