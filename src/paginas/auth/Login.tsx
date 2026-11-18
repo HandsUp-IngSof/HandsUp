@@ -1,24 +1,42 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Mail, Eye, EyeOff, ArrowRight, ShieldCheck, HelpCircle, CheckCircle2 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Mail, Eye, EyeOff, ArrowRight, ShieldCheck, HelpCircle, CheckCircle2, AlertCircle } from "lucide-react";
 
 import { Button } from "@/componentes/UI/Boton";
 import { Input } from "@/componentes/UI/Input";
 import { RoleSelector } from "@/componentes/UI/RoleSelector";
+import { iniciarSesion, rutaSegunRol, type RolPantalla } from "@/lib/auth";
 
 import isotipo from "@/recursos/isotipo.png";
 
 export function Login() {
-  const [role, setRole] = useState<"estudiante" | "docente">("estudiante");
-  const [email, setEmail] = useState("valentina.gomez@correo.com");
-  const [password, setPassword] = useState("............");
+  const navigate = useNavigate();
+  const [role, setRole] = useState<RolPantalla>("estudiante");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [cargando, setCargando] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ role, email, password, rememberMe });
-    alert(`Iniciando sesión como ${role}...`);
+    setError(null);
+
+    if (!email.trim() || !password) {
+      setError("Escribe tu correo y tu contraseña.");
+      return;
+    }
+
+    setCargando(true);
+    try {
+      const perfil = await iniciarSesion(email.trim(), password, role);
+      navigate(rutaSegunRol(perfil.rol), { replace: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo iniciar sesión.");
+    } finally {
+      setCargando(false);
+    }
   };
 
   return (
@@ -180,9 +198,25 @@ export function Login() {
               </a>
             </div>
 
-            <Button type="submit" variant="glow" size="lg" className="w-full mt-4 flex items-center justify-center gap-2">
+            {error && (
+              <div
+                role="alert"
+                className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+              >
+                <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              variant="glow"
+              size="lg"
+              disabled={cargando}
+              className="w-full mt-4 flex items-center justify-center gap-2"
+            >
               <ArrowRight className="w-5 h-5" />
-              <span>Ingresar como {role}</span>
+              <span>{cargando ? "Ingresando..." : `Ingresar como ${role}`}</span>
             </Button>
           </form>
 
