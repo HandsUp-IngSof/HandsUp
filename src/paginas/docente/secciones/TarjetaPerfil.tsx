@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { ArrowUpRight, Camera } from "lucide-react";
 
 import { CambiarFotoPerfil } from "@/componentes/CambiarFotoPerfil";
@@ -6,7 +7,7 @@ import { usePerfil } from "@/componentes/RutaProtegida";
 import { Avatar } from "@/componentes/UI/Avatar";
 
 // Resumen del perfil del docente. Clic en la foto para cambiarla (SCRUM-45).
-// "Editar perfil" se implementa en SCRUM-48.
+// "Editar perfil" abre la pagina "Mi perfil" (SCRUM-48).
 export function TarjetaPerfil() {
   const perfil = usePerfil();
   const nombre = `${perfil.nombre} ${perfil.apellido}`.trim();
@@ -36,14 +37,13 @@ export function TarjetaPerfil() {
         <span className="rounded-full bg-[#E3F3F0] px-3 py-1 text-xs font-semibold text-[#14848D]">
           Perfil verificado
         </span>
-        <button
-          type="button"
-          title="Próximamente"
+        <Link
+          to="/docente/perfil"
           className="flex items-center gap-1 text-xs font-bold text-[#14848D] hover:underline"
         >
           Editar perfil
           <ArrowUpRight className="h-3.5 w-3.5" />
-        </button>
+        </Link>
       </div>
 
       <CambiarFotoPerfil abierta={fotoAbierta} onCerrar={() => setFotoAbierta(false)} />
