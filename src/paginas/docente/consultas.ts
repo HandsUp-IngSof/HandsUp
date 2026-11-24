@@ -74,3 +74,62 @@ export async function obtenerHorariosSemana(profesorId: string, lunes: Date): Pr
     };
   });
 }
+
+// Revisa las reglas de un horario nuevo. Devuelve el mensaje de error o null si es valido.
+export function validarNuevoHorario(inicio: Date): string | null {
+  if (Number.isNaN(inicio.getTime())) return "Elige una fecha y una hora.";
+  if (inicio.getTime() <= Date.now()) return "No puedes crear horarios en fechas u horas pasadas.";
+  const dia = inicio.getDay();
+  if (dia === 0 || dia === 6) return "Solo puedes crear horarios de lunes a viernes.";
+  return null;
+}
+
+// Crea un horario disponible para el docente.
+// Ademas de validar la fecha, revisa que no se cruce con otro horario suyo.
+export async function crearHorario(profesorId: string, inicio: Date, minutos: number): Promise<void> {
+  const mensaje = validarNuevoHorario(inicio);
+  if (mensaje) throw new Error(mensaje);
+
+  const fin = new Date(inicio.getTime() + minutos * 60_000);
+
+  const { data: cruces, error: errorCruces } = await supabase
+    .from("horarios_disponibles")
+    .select("id")
+    .eq("profesor_id", profesorId)
+    .lt("fecha_inicio", fin.toISOString())
+    .gt("fecha_fin", inicio.toISOString())
+    .limit(1);
+  if (errorCruces) throw new Error("No se pudo verificar tu disponibilidad. Intenta de nuevo.");
+  if (cruces.length > 0) throw new Error("Ya tienes un horario que se cruza con esa hora.");
+
+  const { error } = await supabase.from("horarios_disponibles").insert({
+    profesor_id: profesorId,
+    fecha_inicio: inicio.toISOString(),
+    fecha_fin: fin.toISOString(),
+    esta_disponible: true,
+  });
+  if (error) throw new Error("No se pudo guardar el horario. Intenta de nuevo.");
+}
+
+// Elimina un horario del docente. No se permite si tiene una clase agendada.
+export async function eliminarHorario(horarioId: string): Promise<void> {
+  const { data: reservas, error: errorReservas } = await supabase
+    .from("reuniones")
+    .select("id")
+    .eq("horario_id", horarioId)
+    .or(NO_CANCELADA)
+    .limit(1);
+  if (errorReservas) throw new Error("No se pudo verificar el horario. Intenta de nuevo.");
+  if (reservas.length > 0) throw new Error("Este horario tiene una clase agendada y no se puede eliminar.");
+
+  const { error, count } = await supabase
+    .from("horarios_disponibles")
+    .delete({ count: "exact" })
+    .eq("id", horarioId);
+
+  // 23503: el horario tiene clases registradas (por ejemplo, canceladas) que lo referencian.
+  if (error?.code === "23503") {
+    throw new Error("Este horario tiene clases registradas y no se puede eliminar.");
+  }
+  if (error || count === 0) throw new Error("No se pudo eliminar el horario. Intenta de nuevo.");
+}
