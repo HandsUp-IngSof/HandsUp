@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
-import { AlertCircle, Camera, CheckCircle2, Loader2, Lock } from "lucide-react";
+import { AlertCircle, Camera, CheckCircle2, Loader2, Lock, Phone } from "lucide-react";
 
 import { CambiarFotoPerfil } from "@/componentes/CambiarFotoPerfil";
 import { useActualizarPerfil, usePerfil } from "@/componentes/RutaProtegida";
@@ -7,6 +7,7 @@ import { Avatar } from "@/componentes/UI/Avatar";
 import { cn } from "@/lib/utils";
 import {
   BIO_MAXIMO,
+  formatoTelefono,
   guardarPerfil,
   normalizarPerfil,
   obtenerCamposPerfil,
@@ -50,14 +51,20 @@ const claseCampo = (conError?: boolean) =>
   );
 
 interface FormularioPerfilProps {
-  rolTexto: string; // "Docente de LSC" o "Estudiante"
+  rolTexto: string; // "Docente de LSC" o "Estudiante de LSC"
+  conTelefono?: boolean; // el estudiante agrega su celular de contacto (SCRUM-47)
+  ejemploBio?: string;
 }
 
-const VACIO: DatosPerfil = { nombre: "", apellido: "", bio: "" };
+const VACIO: DatosPerfil = { nombre: "", apellido: "", bio: "", telefono: "" };
 
-// Formulario "Mi perfil" (SCRUM-48): foto, nombre, apellido y descripcion.
-// El correo y el rol se muestran pero no se pueden cambiar.
-export function FormularioPerfil({ rolTexto }: FormularioPerfilProps) {
+// Formulario "Mi perfil": foto, nombre, apellido y descripcion (SCRUM-48), mas el telefono
+// del estudiante (SCRUM-47). El correo y el rol se muestran pero no se pueden cambiar.
+export function FormularioPerfil({
+  rolTexto,
+  conTelefono = false,
+  ejemploBio = "Ej: Docente de LSC con 5 años de experiencia en comunidades sordas.",
+}: FormularioPerfilProps) {
   const perfil = usePerfil();
   const actualizarPerfil = useActualizarPerfil();
 
@@ -74,13 +81,15 @@ export function FormularioPerfil({ rolTexto }: FormularioPerfilProps) {
 
   useEffect(() => {
     let activo = true;
-    Promise.all([obtenerCamposPerfil(perfil.id, ["nombre", "apellido", "bio"]), obtenerCorreo()])
+    const columnas = ["nombre", "apellido", "bio", ...(conTelefono ? ["telefono"] : [])];
+    Promise.all([obtenerCamposPerfil(perfil.id, columnas), obtenerCorreo()])
       .then(([campos, email]) => {
         if (!activo) return;
         const cargados: DatosPerfil = {
           nombre: String(campos.nombre ?? ""),
           apellido: String(campos.apellido ?? ""),
           bio: String(campos.bio ?? ""),
+          telefono: campos.telefono ? formatoTelefono(String(campos.telefono)) : "",
         };
         setOriginal(cargados);
         setDatos(cargados);
@@ -91,7 +100,7 @@ export function FormularioPerfil({ rolTexto }: FormularioPerfilProps) {
     return () => {
       activo = false;
     };
-  }, [perfil.id]);
+  }, [perfil.id, conTelefono]);
 
   // El aviso de exito desaparece solo despues de unos segundos.
   useEffect(() => {
@@ -113,20 +122,25 @@ export function FormularioPerfil({ rolTexto }: FormularioPerfilProps) {
   const guardar = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setAviso(null);
-    const encontrados = validarPerfil(datos);
+    const encontrados = validarPerfil(datos, { conTelefono });
     setErrores(encontrados);
     if (Object.keys(encontrados).length > 0) return;
 
-    const limpios = normalizarPerfil(datos);
+    const limpios = normalizarPerfil(datos, { conTelefono });
     setGuardando(true);
     setErrorGuardar(null);
     try {
       await guardarPerfil(perfil.id, limpios);
-      const guardados: DatosPerfil = { ...limpios, bio: limpios.bio ?? "" };
+      const guardados: DatosPerfil = {
+        nombre: limpios.nombre ?? "",
+        apellido: limpios.apellido ?? "",
+        bio: limpios.bio ?? "",
+        telefono: limpios.telefono ? formatoTelefono(limpios.telefono) : "",
+      };
       setOriginal(guardados);
       setDatos(guardados);
       // El nombre del encabezado y de las tarjetas cambia sin recargar la pagina.
-      actualizarPerfil({ nombre: limpios.nombre, apellido: limpios.apellido });
+      actualizarPerfil({ nombre: guardados.nombre, apellido: guardados.apellido });
       setAviso("Perfil actualizado.");
     } catch (err) {
       setErrorGuardar(err instanceof Error ? err.message : "No se pudo guardar tu perfil.");
@@ -248,6 +262,32 @@ export function FormularioPerfil({ rolTexto }: FormularioPerfilProps) {
           </Campo>
         </div>
 
+        {conTelefono && (
+          <Campo
+            id="perfil-telefono"
+            etiqueta="Celular de contacto"
+            error={errores.telefono}
+            ayuda="Opcional. Solo lo verán los docentes con los que tengas clase."
+          >
+            <div className="relative sm:max-w-xs">
+              <Phone className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#14848D]" />
+              <input
+                id="perfil-telefono"
+                type="tel"
+                inputMode="tel"
+                value={datos.telefono}
+                onChange={(e) => cambiar("telefono")(e.target.value)}
+                maxLength={20}
+                autoComplete="tel-national"
+                placeholder="300 123 4567"
+                aria-invalid={errores.telefono ? true : undefined}
+                aria-describedby={errores.telefono ? "perfil-telefono-error" : undefined}
+                className={cn(claseCampo(!!errores.telefono), "h-11 pl-9")}
+              />
+            </div>
+          </Campo>
+        )}
+
         <Campo
           id="perfil-bio"
           etiqueta="Sobre mí"
@@ -259,7 +299,7 @@ export function FormularioPerfil({ rolTexto }: FormularioPerfilProps) {
             value={datos.bio}
             onChange={(e) => cambiar("bio")(e.target.value)}
             rows={4}
-            placeholder="Ej: Docente de LSC con 5 años de experiencia en comunidades sordas."
+            placeholder={ejemploBio}
             aria-invalid={errores.bio ? true : undefined}
             aria-describedby={errores.bio ? "perfil-bio-error" : undefined}
             className={cn(claseCampo(!!errores.bio), "resize-y py-2.5")}
