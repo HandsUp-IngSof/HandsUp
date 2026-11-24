@@ -34,6 +34,7 @@ export function PanelDocente() {
       nombre={`${perfil.nombre} ${perfil.apellido}`.trim()}
       rolTexto="Docente de LSC"
       avatarUrl={perfil.avatar_url}
+      rutaPerfil="/docente/perfil"
     >
       <Suspense fallback={<Cargando pantallaCompleta={false} />}>
         <Outlet />
