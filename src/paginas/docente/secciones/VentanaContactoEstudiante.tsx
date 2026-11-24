@@ -123,7 +123,7 @@ export function VentanaContactoEstudiante({ estudiante, onCerrar }: VentanaConta
             </div>
           </dl>
 
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid gap-2">
             {contacto.telefono ? (
               <a
                 href={enlaceWhatsApp(contacto.telefono, saludo)}
