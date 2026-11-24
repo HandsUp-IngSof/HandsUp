@@ -11,6 +11,7 @@ export interface Perfil {
   nombre: string;
   apellido: string;
   rol: RolBD;
+  avatar_url: string | null; // direccion de la foto de perfil (SCRUM-45) o null si no tiene
 }
 
 // La pantalla dice "docente", pero en la base de datos el rol se llama "profesor".
@@ -51,6 +52,11 @@ export function olvidarPerfil(): void {
   perfilEnMemoria = null;
 }
 
+// Reemplaza el perfil guardado, por ejemplo despues de cambiar la foto de perfil.
+export function guardarPerfilEnMemoria(perfil: Perfil): void {
+  perfilEnMemoria = perfil;
+}
+
 // Si la sesion se cierra (boton, expiracion u otra pestana), se descarta el perfil guardado.
 supabase.auth.onAuthStateChange((evento) => {
   if (evento === "SIGNED_OUT") olvidarPerfil();
@@ -61,7 +67,7 @@ export async function obtenerPerfil(idUsuario: string): Promise<Perfil | null> {
 
   const { data, error } = await supabase
     .from("perfiles")
-    .select("id, nombre, apellido, rol")
+    .select("id, nombre, apellido, rol, avatar_url")
     .eq("id", idUsuario)
     .maybeSingle();
 

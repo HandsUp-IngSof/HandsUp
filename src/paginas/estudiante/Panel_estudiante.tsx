@@ -1,14 +1,19 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { Camera, LogOut } from "lucide-react";
 
+import { CambiarFotoPerfil } from "@/componentes/CambiarFotoPerfil";
 import { Button } from "@/componentes/UI/Boton";
+import { Avatar } from "@/componentes/UI/Avatar";
 import { usePerfil } from "@/componentes/RutaProtegida";
 import { cerrarSesion } from "@/lib/auth";
 
-// Version inicial del panel: solo confirma que el login y la proteccion por rol funcionan.
+// Version inicial del panel: confirma el login y permite cambiar la foto de perfil (SCRUM-45).
 export function PanelEstudiante() {
   const perfil = usePerfil();
   const navigate = useNavigate();
+  const [fotoAbierta, setFotoAbierta] = useState(false);
+  const nombre = `${perfil.nombre} ${perfil.apellido}`.trim();
 
   const salir = async () => {
     await cerrarSesion();
@@ -17,6 +22,18 @@ export function PanelEstudiante() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center gap-4 p-6 font-['Fredoka',sans-serif]">
+      <button
+        type="button"
+        onClick={() => setFotoAbierta(true)}
+        className="group relative rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14848D] focus-visible:ring-offset-2"
+        aria-label="Cambiar foto de perfil"
+        title="Cambiar foto de perfil"
+      >
+        <Avatar nombre={nombre} url={perfil.avatar_url} tamano="xl" />
+        <span className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#14848D] text-white ring-2 ring-white transition-transform group-hover:scale-110">
+          <Camera className="h-4 w-4" />
+        </span>
+      </button>
       <span className="text-xs font-bold uppercase tracking-wider text-[#D81B60]">Espacio estudiante</span>
       <h1 className="text-3xl font-bold text-slate-800">¡Hola, {perfil.nombre}!</h1>
       <p className="text-slate-500">Panel del estudiante en construcción.</p>
@@ -24,6 +41,8 @@ export function PanelEstudiante() {
         <LogOut />
         Cerrar sesión
       </Button>
+
+      <CambiarFotoPerfil abierta={fotoAbierta} onCerrar={() => setFotoAbierta(false)} />
     </main>
   );
 }

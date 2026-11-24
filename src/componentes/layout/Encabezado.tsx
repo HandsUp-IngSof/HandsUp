@@ -2,19 +2,20 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bell, LogOut, Menu, MoreHorizontal } from "lucide-react";
 
+import { Avatar } from "@/componentes/UI/Avatar";
 import { cerrarSesion } from "@/lib/auth";
-import { iniciales } from "@/lib/utils";
 
 interface EncabezadoProps {
   titulo: string;
   subtitulo: string;
   nombre: string;
   rolTexto: string;
+  avatarUrl?: string | null;
   onAbrirMenu: () => void;
 }
 
 // Barra superior de los paneles: titulo, notificaciones, usuario y menu de opciones.
-export function Encabezado({ titulo, subtitulo, nombre, rolTexto, onAbrirMenu }: EncabezadoProps) {
+export function Encabezado({ titulo, subtitulo, nombre, rolTexto, avatarUrl, onAbrirMenu }: EncabezadoProps) {
   const navigate = useNavigate();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -60,9 +61,7 @@ export function Encabezado({ titulo, subtitulo, nombre, rolTexto, onAbrirMenu }:
       </button>
 
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E7F3F3] text-sm font-bold text-[#14848D]">
-          {iniciales(nombre)}
-        </span>
+        <Avatar nombre={nombre} url={avatarUrl} />
         <div className="hidden sm:block">
           <p className="text-sm font-bold leading-tight text-slate-800">{nombre}</p>
           <p className="text-xs text-slate-500">{rolTexto}</p>

@@ -1,17 +1,26 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
 import { Cargando } from "@/componentes/UI/Cargando";
 import { supabase } from "@/lib/supabase";
-import { obtenerPerfil, type Perfil, type RolBD } from "@/lib/auth";
+import { guardarPerfilEnMemoria, obtenerPerfil, type Perfil, type RolBD } from "@/lib/auth";
 
 const PerfilContext = createContext<Perfil | null>(null);
+const ActualizarPerfilContext = createContext<((cambios: Partial<Perfil>) => void) | null>(null);
 
 // Devuelve el perfil del usuario con sesion iniciada. Solo funciona dentro de una RutaProtegida.
 export function usePerfil(): Perfil {
   const perfil = useContext(PerfilContext);
   if (!perfil) throw new Error("usePerfil debe usarse dentro de una RutaProtegida");
   return perfil;
+}
+
+// Devuelve una funcion para actualizar el perfil en pantalla (por ejemplo, al cambiar la foto)
+// sin tener que recargar la pagina.
+export function useActualizarPerfil(): (cambios: Partial<Perfil>) => void {
+  const actualizar = useContext(ActualizarPerfilContext);
+  if (!actualizar) throw new Error("useActualizarPerfil debe usarse dentro de una RutaProtegida");
+  return actualizar;
 }
 
 interface RutaProtegidaProps {
@@ -52,6 +61,15 @@ export function RutaProtegida({ rol, children }: RutaProtegidaProps) {
     };
   }, [rol]);
 
+  const actualizarPerfil = useCallback((cambios: Partial<Perfil>) => {
+    setPerfil((actual) => {
+      if (!actual) return actual;
+      const nuevo = { ...actual, ...cambios };
+      guardarPerfilEnMemoria(nuevo);
+      return nuevo;
+    });
+  }, []);
+
   if (estado === "cargando") {
     return <Cargando texto="Verificando tu sesión..." />;
   }
@@ -60,5 +78,9 @@ export function RutaProtegida({ rol, children }: RutaProtegidaProps) {
     return <Navigate to="/login" replace />;
   }
 
-  return <PerfilContext.Provider value={perfil}>{children}</PerfilContext.Provider>;
+  return (
+    <ActualizarPerfilContext.Provider value={actualizarPerfil}>
+      <PerfilContext.Provider value={perfil}>{children}</PerfilContext.Provider>
+    </ActualizarPerfilContext.Provider>
+  );
 }

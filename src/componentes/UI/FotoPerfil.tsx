@@ -6,14 +6,19 @@ interface FotoPerfilProps {
     value: File | null;
     onChange: (file: File | null) => void;
     maxSizeMB?: number;
+    // Foto que el usuario ya tiene guardada; se muestra mientras no elija una nueva.
+    urlActual?: string | null;
+    // Muestra "(opcional)" debajo (en el registro). En el panel se oculta.
+    opcional?: boolean;
 }
 
 const TIPOS_PERMITIDOS = ["image/jpeg", "image/png", "image/webp"];
 
-export function FotoPerfil({ value, onChange, maxSizeMB = 2 }: FotoPerfilProps) {
+export function FotoPerfil({ value, onChange, maxSizeMB = 2, urlActual = null, opcional = true }: FotoPerfilProps) {
     const inputRef = useRef<HTMLInputElement>(null);
-    const [preview, setPreview] = useState<string | null>(null);
+    const [previewArchivo, setPreview] = useState<string | null>(null);
     const [error, setError] = useState("");
+    const preview = previewArchivo ?? urlActual;
 
     // Crea la vista previa cuando hay archivo y libera la memoria al cambiar o desmontar
     useEffect(() => {
@@ -57,7 +62,7 @@ export function FotoPerfil({ value, onChange, maxSizeMB = 2 }: FotoPerfilProps) 
                 <button
                     type="button"
                     onClick={abrirSelector}
-                    aria-label={value ? "Cambiar foto de perfil" : "Agregar foto de perfil"}
+                    aria-label={preview ? "Cambiar foto de perfil" : "Agregar foto de perfil"}
                     className={cn(
                         "flex h-24 w-24 items-center justify-center overflow-hidden rounded-full",
                         "transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#14848D] focus-visible:ring-offset-2",
@@ -104,7 +109,7 @@ export function FotoPerfil({ value, onChange, maxSizeMB = 2 }: FotoPerfilProps) 
             </div>
 
             <p className="text-xs text-[#5E7F82] font-['Fredoka',sans-serif]">
-                Foto de perfil <span className="text-[#7C9496]">(opcional)</span>
+                Foto de perfil {opcional && <span className="text-[#7C9496]">(opcional)</span>}
             </p>
             {error && <p className="text-xs text-red-500">{error}</p>}
         </div>

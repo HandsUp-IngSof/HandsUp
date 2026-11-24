@@ -4,7 +4,10 @@ import { Mail, Eye, EyeOff, ArrowRight, AlertCircle } from "lucide-react";
 import { RoleSelector } from "@/componentes/UI/RoleSelector";
 import { Button } from "@/componentes/UI/Boton";
 import { Input } from "@/componentes/UI/Input";
+import { FotoPerfil } from "@/componentes/UI/FotoPerfil";
 import { registrarUsuario, separarNombre, type RolPantalla } from "@/lib/auth";
+import { subirFotoPerfil } from "@/lib/fotoPerfil";
+import { supabase } from "@/lib/supabase";
 import isotipo from "@/recursos/isotipo.webp";
 
 interface CampoProps {
@@ -46,6 +49,7 @@ export function Registro() {
     const [verConfirmar, setVerConfirmar] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [cargando, setCargando] = useState(false);
+    const [foto, setFoto] = useState<File | null>(null);
 
     const passwordValida = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(password);
     const noCoinciden = confirmarPassword.length > 0 && confirmarPassword !== password;
@@ -76,14 +80,23 @@ export function Registro() {
             const resultado = await registrarUsuario({ nombreCompleto, email, password, rol });
 
             if (resultado === "sesion_iniciada") {
-                // La cuenta quedo lista y con sesion: va directo a su panel.
+                // La cuenta quedo lista y con sesion: si eligio foto, se sube (SCRUM-45).
+                // La foto es opcional: si falla, la cuenta igual queda creada y puede subirla desde su panel.
+                if (foto) {
+                    const { data } = await supabase.auth.getSession();
+                    if (data.session) {
+                        await subirFotoPerfil(data.session.user.id, foto).catch(() => undefined);
+                    }
+                }
                 navigate(rol === "docente" ? "/docente" : "/estudiante", { replace: true });
             } else {
                 // Supabase envio un correo de confirmacion: vuelve al login con el aviso.
+                // Sin sesion no se puede subir la foto; se sube despues desde el panel.
+                const avisoFoto = foto ? " Podrás subir tu foto de perfil desde tu panel." : "";
                 navigate("/login", {
                     replace: true,
                     state: {
-                        aviso: `Te enviamos un correo a ${email.trim()}. Confírmalo para poder iniciar sesión.`,
+                        aviso: `Te enviamos un correo a ${email.trim()}. Confírmalo para poder iniciar sesión.${avisoFoto}`,
                         email: email.trim(),
                     },
                 });
@@ -130,6 +143,8 @@ export function Registro() {
 
                 {/* Formulario */}
                 <form onSubmit={handleSubmit} className="mt-8 w-full flex flex-col gap-5">
+                    <FotoPerfil value={foto} onChange={setFoto} />
+
                     <div className="flex flex-col gap-2">
                         <span className="text-sm text-[#12383C] font-['Fredoka',sans-serif]">
                             Quiero ser parte como
