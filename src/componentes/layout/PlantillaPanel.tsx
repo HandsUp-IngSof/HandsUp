@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 
 import { BarraLateral, type EnlaceMenu } from "@/componentes/layout/BarraLateral";
-import { Encabezado } from "@/componentes/layout/Encabezado";
+import { Encabezado, type OpcionMenu } from "@/componentes/layout/Encabezado";
 
 interface PlantillaPanelProps {
   etiqueta: string;
@@ -12,6 +12,7 @@ interface PlantillaPanelProps {
   rolTexto: string;
   avatarUrl?: string | null;
   rutaPerfil?: string;
+  opcionesMenu?: OpcionMenu[];
   children: ReactNode;
 }
 
@@ -25,6 +26,7 @@ export function PlantillaPanel({
   rolTexto,
   avatarUrl,
   rutaPerfil,
+  opcionesMenu,
   children,
 }: PlantillaPanelProps) {
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -46,6 +48,7 @@ export function PlantillaPanel({
           rolTexto={rolTexto}
           avatarUrl={avatarUrl}
           rutaPerfil={rutaPerfil}
+          opcionesMenu={opcionesMenu}
           onAbrirMenu={() => setMenuAbierto(true)}
         />
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
