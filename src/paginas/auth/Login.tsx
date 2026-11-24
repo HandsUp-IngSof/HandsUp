@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Mail, Eye, EyeOff, ArrowRight, ShieldCheck, HelpCircle, CheckCircle2, AlertCircle } from "lucide-react";
 
 import { Button } from "@/componentes/UI/Boton";
@@ -11,8 +11,10 @@ import isotipo from "@/recursos/isotipo.png";
 
 export function Login() {
   const navigate = useNavigate();
+  // Aviso y correo que envia la pantalla de registro al terminar (si viene de ahi).
+  const desdeRegistro = useLocation().state as { aviso?: string; email?: string } | null;
   const [role, setRole] = useState<RolPantalla>("estudiante");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(desdeRegistro?.email ?? "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -131,6 +133,16 @@ export function Login() {
               Tu próxima conversación empieza aquí.
             </p>
           </div>
+
+          {desdeRegistro?.aviso && (
+            <div
+              role="status"
+              className="mb-5 flex items-start gap-2 rounded-xl border border-[#14848D]/30 bg-[#C5E5E4]/40 p-3 text-sm text-[#0F5F66]"
+            >
+              <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" />
+              <span>{desdeRegistro.aviso}</span>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             

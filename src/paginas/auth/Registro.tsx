@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Mail, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Mail, Eye, EyeOff, ArrowRight, AlertCircle } from "lucide-react";
 import { RoleSelector } from "@/componentes/UI/RoleSelector";
 import { Button } from "@/componentes/UI/Boton";
 import { Input } from "@/componentes/UI/Input";
+import { registrarUsuario, separarNombre, type RolPantalla } from "@/lib/auth";
 import isotipo from "@/recursos/isotipo.png";
 
 interface CampoProps {
@@ -35,22 +36,63 @@ function Campo({ id, label, hint, icono, children }: CampoProps) {
 }
 
 export function Registro() {
-    const [rol, setRol] = useState<"estudiante" | "docente">("estudiante");
+    const navigate = useNavigate();
+    const [rol, setRol] = useState<RolPantalla>("estudiante");
     const [nombreCompleto, setNombre] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmarPassword, setConfirmarPassword] = useState("");
     const [verPassword, setVerPassword] = useState(false);
     const [verConfirmar, setVerConfirmar] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [cargando, setCargando] = useState(false);
 
     const passwordValida = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(password);
     const noCoinciden = confirmarPassword.length > 0 && confirmarPassword !== password;
 
-    const handleSubmit = (e: React.FormEvent) => {
+    // Revisa el formulario antes de enviarlo a Supabase. Devuelve el mensaje de error o null.
+    const validar = (): string | null => {
+        const { apellido } = separarNombre(nombreCompleto);
+        if (!nombreCompleto.trim()) return "Escribe tu nombre completo.";
+        if (!apellido) return "Escribe tu nombre y tu apellido.";
+        if (!email.trim()) return "Escribe tu correo electrónico.";
+        if (!passwordValida) return "La contraseña debe tener mínimo 8 caracteres, con letras y números.";
+        if (confirmarPassword !== password) return "Las contraseñas no coinciden.";
+        return null;
+    };
+
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!passwordValida || noCoinciden) return;
-        // TODO: llamar a tu API
-        console.log({ rol, nombreCompleto, email, password });
+        setError(null);
+
+        const mensajeValidacion = validar();
+        if (mensajeValidacion) {
+            setError(mensajeValidacion);
+            return;
+        }
+
+        setCargando(true);
+        try {
+            const resultado = await registrarUsuario({ nombreCompleto, email, password, rol });
+
+            if (resultado === "sesion_iniciada") {
+                // La cuenta quedo lista y con sesion: va directo a su panel.
+                navigate(rol === "docente" ? "/docente" : "/estudiante", { replace: true });
+            } else {
+                // Supabase envio un correo de confirmacion: vuelve al login con el aviso.
+                navigate("/login", {
+                    replace: true,
+                    state: {
+                        aviso: `Te enviamos un correo a ${email.trim()}. Confírmalo para poder iniciar sesión.`,
+                        email: email.trim(),
+                    },
+                });
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "No se pudo crear la cuenta.");
+        } finally {
+            setCargando(false);
+        }
     };
 
     const ojo = (visible: boolean, set: (v: boolean) => void) => (
@@ -153,10 +195,20 @@ export function Registro() {
                         />
                     </Campo>
 
+                    {error && (
+                        <div
+                            role="alert"
+                            className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+                        >
+                            <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                            <span>{error}</span>
+                        </div>
+                    )}
+
                     {/* size default trae w-full sm:w-auto; lo sobrescribimos para que ocupe todo el ancho */}
-                    <Button type="submit" className="mt-2 sm:w-full">
+                    <Button type="submit" disabled={cargando} className="mt-2 sm:w-full">
                         <ArrowRight />
-                        Crear mi cuenta
+                        {cargando ? "Creando tu cuenta..." : "Crear mi cuenta"}
                     </Button>
                 </form>
 
