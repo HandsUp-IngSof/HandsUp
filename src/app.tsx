@@ -9,11 +9,25 @@ const Registro = lazy(() => import("@/paginas/auth/Registro").then((m) => ({ def
 const PanelEstudiante = lazy(() =>
     import("@/paginas/estudiante/Panel_estudiante").then((m) => ({ default: m.PanelEstudiante })),
 );
+const RutaProtegida = lazy(() =>
+    import("@/componentes/RutaProtegida").then((m) => ({ default: m.RutaProtegida })),
+);
+
+// Panel docente: la plantilla (menu y encabezado) queda fija y solo cambia el contenido.
 const PanelDocente = lazy(() =>
     import("@/paginas/docente/Panel_docente").then((m) => ({ default: m.PanelDocente })),
 );
-const RutaProtegida = lazy(() =>
-    import("@/componentes/RutaProtegida").then((m) => ({ default: m.RutaProtegida })),
+const InicioDocente = lazy(() =>
+    import("@/paginas/docente/InicioDocente").then((m) => ({ default: m.InicioDocente })),
+);
+const CalendarioDocente = lazy(() =>
+    import("@/paginas/docente/CalendarioDocente").then((m) => ({ default: m.CalendarioDocente })),
+);
+const EstudiantesDocente = lazy(() =>
+    import("@/paginas/docente/EstudiantesDocente").then((m) => ({ default: m.EstudiantesDocente })),
+);
+const MensajesDocente = lazy(() =>
+    import("@/paginas/docente/MensajesDocente").then((m) => ({ default: m.MensajesDocente })),
 );
 
 export function App() {
@@ -39,7 +53,13 @@ export function App() {
                                 <PanelDocente />
                             </RutaProtegida>
                         }
-                    />
+                    >
+                        <Route index element={<InicioDocente />} />
+                        <Route path="calendario" element={<CalendarioDocente />} />
+                        <Route path="estudiantes" element={<EstudiantesDocente />} />
+                        <Route path="mensajes" element={<MensajesDocente />} />
+                        <Route path="*" element={<Navigate to="/docente" replace />} />
+                    </Route>
                     <Route path="*" element={<Navigate to="/login" replace />} />
                 </Routes>
             </Suspense>

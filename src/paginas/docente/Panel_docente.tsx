@@ -1,29 +1,42 @@
-import { useNavigate } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { Suspense, useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import { CalendarDays, LayoutGrid, MessagesSquare, Users } from "lucide-react";
 
-import { Button } from "@/componentes/UI/Boton";
 import { usePerfil } from "@/componentes/RutaProtegida";
-import { cerrarSesion } from "@/lib/auth";
+import { PlantillaPanel } from "@/componentes/layout/PlantillaPanel";
+import type { EnlaceMenu } from "@/componentes/layout/BarraLateral";
+import { Cargando } from "@/componentes/UI/Cargando";
 
-// Version inicial del panel: solo confirma que el login y la proteccion por rol funcionan.
+const enlacesDocente: EnlaceMenu[] = [
+  { texto: "Mi espacio", icono: LayoutGrid, ruta: "/docente", exacto: true },
+  { texto: "Calendario", icono: CalendarDays, ruta: "/docente/calendario" },
+  { texto: "Mis estudiantes", icono: Users, ruta: "/docente/estudiantes" },
+  { texto: "Mensajes", icono: MessagesSquare, ruta: "/docente/mensajes", insignia: 2 },
+];
+
+// Estructura del panel docente (SCRUM-57). El menu lateral y el encabezado quedan fijos;
+// en <Outlet /> se muestra la pagina elegida: inicio, calendario, estudiantes o mensajes.
 export function PanelDocente() {
   const perfil = usePerfil();
-  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  const salir = async () => {
-    await cerrarSesion();
-    navigate("/login", { replace: true });
-  };
+  // Al cambiar de pagina, vuelve al inicio de la pantalla.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-4 p-6 font-['Fredoka',sans-serif]">
-      <span className="text-xs font-bold uppercase tracking-wider text-[#D81B60]">Espacio docente</span>
-      <h1 className="text-3xl font-bold text-slate-800">¡Hola, {perfil.nombre}!</h1>
-      <p className="text-slate-500">Panel del docente en construcción.</p>
-      <Button variant="outline" size="sm" onClick={salir}>
-        <LogOut />
-        Cerrar sesión
-      </Button>
-    </main>
+    <PlantillaPanel
+      etiqueta="Espacio docente"
+      enlaces={enlacesDocente}
+      titulo="Mi espacio docente"
+      subtitulo="Lengua de Señas Colombiana · LSC"
+      nombre={`${perfil.nombre} ${perfil.apellido}`.trim()}
+      rolTexto="Docente de LSC"
+    >
+      <Suspense fallback={<Cargando pantallaCompleta={false} />}>
+        <Outlet />
+      </Suspense>
+    </PlantillaPanel>
   );
 }
