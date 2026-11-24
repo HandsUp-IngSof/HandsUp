@@ -10,26 +10,6 @@ export const resumenEjemplo = {
   clasesSemana: 5,
 };
 
-// Cuadricula de disponibilidad. Pendiente: SCRUM-41.
-export type EstadoBloque = "vacio" | "disponible" | "reservado";
-
-export interface Bloque {
-  estado: EstadoBloque;
-  estudiante?: string;
-}
-
-export const HORAS_EJEMPLO = ["9:00", "10:00", "16:00"];
-
-const vacio: Bloque = { estado: "vacio" };
-const disponible: Bloque = { estado: "disponible" };
-
-// Filas = horas, columnas = lunes a viernes de la semana actual.
-export const disponibilidadEjemplo: Bloque[][] = [
-  [vacio, vacio, disponible, vacio, { estado: "reservado", estudiante: "Andrés" }],
-  [vacio, vacio, disponible, { estado: "reservado", estudiante: "Sofía" }, vacio],
-  [vacio, vacio, vacio, { estado: "reservado", estudiante: "Valentina" }, disponible],
-];
-
 // Proxima clase. Pendiente: tarea "Visualización de la próxima clase del docente".
 export const proximaClaseEjemplo = {
   titulo: "Saludos con Sofía",

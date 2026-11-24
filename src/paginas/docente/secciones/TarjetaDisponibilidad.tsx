@@ -1,21 +1,27 @@
-import { useState } from "react";
-import { CheckCircle2, ChevronLeft, ChevronRight, Link2, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AlertCircle, CheckCircle2, ChevronLeft, ChevronRight, Link2, Loader2, Plus } from "lucide-react";
 
+import { usePerfil } from "@/componentes/RutaProtegida";
 import { cn } from "@/lib/utils";
-import { disponibilidadEjemplo, HORAS_EJEMPLO, type Bloque } from "@/paginas/docente/datosEjemplo";
+import {
+  claveHora,
+  lunesDeLaSemana,
+  obtenerHorariosSemana,
+  type HorarioSemana,
+} from "@/paginas/docente/consultas";
 
 const DIAS = ["Lun", "Mar", "Mié", "Jue", "Vie"];
+// Horas que siempre se muestran; si el docente tiene horarios en otras horas, se agregan.
+const HORAS_BASE = ["9:00", "10:00", "16:00"];
 const formatoMes = new Intl.DateTimeFormat("es-CO", { month: "long" });
 
-// Lunes de la semana actual, movido "desplazamiento" semanas hacia adelante o atras.
-function lunesDeLaSemana(desplazamiento: number): Date {
-  const hoy = new Date();
-  const diaSemana = (hoy.getDay() + 6) % 7; // 0 = lunes ... 6 = domingo
-  const lunes = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - diaSemana + desplazamiento * 7);
-  return lunes;
+type EstadoBloque = "vacio" | "disponible" | "reservado";
+interface Bloque {
+  estado: EstadoBloque;
+  estudiante?: string;
 }
 
-// Ej: "19–23 de octubre, 2026" o "30 de noviembre – 4 de diciembre, 2026".
+// Ej: "23–27 de noviembre, 2026" o "30 de noviembre – 4 de diciembre, 2026".
 function rangoSemana(lunes: Date): string {
   const viernes = new Date(lunes.getFullYear(), lunes.getMonth(), lunes.getDate() + 4);
   const mesLunes = formatoMes.format(lunes);
@@ -30,6 +36,15 @@ function esHoy(fecha: Date): boolean {
   return fecha.toDateString() === new Date().toDateString();
 }
 
+// "9:00" antes que "10:00" antes que "16:00".
+function ordenarHoras(horas: string[]): string[] {
+  const minutos = (h: string) => {
+    const [hh, mm] = h.split(":").map(Number);
+    return hh * 60 + mm;
+  };
+  return [...horas].sort((a, b) => minutos(a) - minutos(b));
+}
+
 function Celda({ bloque }: { bloque: Bloque }) {
   return (
     <div
@@ -42,26 +57,57 @@ function Celda({ bloque }: { bloque: Bloque }) {
     >
       {bloque.estado === "vacio" && "—"}
       {bloque.estado === "disponible" && "Disponible"}
-      {bloque.estado === "reservado" && `Clase · ${bloque.estudiante}`}
+      {bloque.estado === "reservado" && (bloque.estudiante ? `Clase · ${bloque.estudiante}` : "Reservado")}
     </div>
   );
 }
 
-// Disponibilidad semanal del docente y enlace de la clase virtual.
-// Datos de ejemplo hasta implementar SCRUM-41 (horarios) y SCRUM-43 (enlace).
+// Disponibilidad semanal del docente con los horarios reales de Supabase (SCRUM-41).
+// "Añadir horario" y "Guardar enlace" (SCRUM-43) se implementan en sus requisitos.
 export function TarjetaDisponibilidad() {
+  const perfil = usePerfil();
   const [desplazamiento, setDesplazamiento] = useState(0);
+  const [horarios, setHorarios] = useState<HorarioSemana[]>([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [enlace, setEnlace] = useState("");
 
   const lunes = lunesDeLaSemana(desplazamiento);
-  const dias = DIAS.map((nombre, i) => {
-    const fecha = new Date(lunes.getFullYear(), lunes.getMonth(), lunes.getDate() + i);
-    return { nombre, fecha };
-  });
+  const dias = DIAS.map((nombre, i) => ({
+    nombre,
+    fecha: new Date(lunes.getFullYear(), lunes.getMonth(), lunes.getDate() + i),
+  }));
 
-  // El ejemplo solo se muestra en la semana actual; las demas aparecen vacias.
-  const bloques = (fila: number, columna: number): Bloque =>
-    desplazamiento === 0 ? disponibilidadEjemplo[fila][columna] : { estado: "vacio" };
+  useEffect(() => {
+    let activo = true;
+    setCargando(true);
+    setError(null);
+    obtenerHorariosSemana(perfil.id, lunesDeLaSemana(desplazamiento))
+      .then((datos) => {
+        if (!activo) return;
+        setHorarios(datos);
+        setCargando(false);
+      })
+      .catch((err: Error) => {
+        if (!activo) return;
+        setError(err.message);
+        setCargando(false);
+      });
+    return () => {
+      activo = false;
+    };
+  }, [perfil.id, desplazamiento]);
+
+  const horas = ordenarHoras([...new Set([...HORAS_BASE, ...horarios.map((h) => claveHora(h.inicio))])]);
+
+  const bloque = (fecha: Date, hora: string): Bloque => {
+    const horario = horarios.find(
+      (h) => h.inicio.toDateString() === fecha.toDateString() && claveHora(h.inicio) === hora,
+    );
+    if (!horario) return { estado: "vacio" };
+    if (horario.estudiante) return { estado: "reservado", estudiante: horario.estudiante };
+    return { estado: horario.disponible ? "disponible" : "reservado" };
+  };
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
@@ -99,6 +145,7 @@ export function TarjetaDisponibilidad() {
           >
             <ChevronRight className="h-4 w-4" />
           </button>
+          {cargando && <Loader2 className="h-4 w-4 animate-spin text-[#14848D]" aria-label="Cargando horarios" />}
         </div>
         <div className="flex items-center gap-3 text-[11px] text-slate-500">
           <span className="flex items-center gap-1">
@@ -110,31 +157,41 @@ export function TarjetaDisponibilidad() {
         </div>
       </div>
 
-      <div className="mt-4 overflow-x-auto">
-        <div className="grid min-w-[520px] grid-cols-[48px_repeat(5,minmax(0,1fr))] gap-2">
-          <div />
-          {dias.map(({ nombre, fecha }) => (
-            <div
-              key={nombre}
-              className={cn(
-                "flex h-9 items-center justify-center rounded-lg text-xs font-bold",
-                esHoy(fecha) ? "bg-[#14848D] text-white" : "bg-slate-100 text-slate-600",
-              )}
-            >
-              {nombre} {fecha.getDate()}
-            </div>
-          ))}
+      {error ? (
+        <p className="mt-4 flex items-center gap-2 rounded-xl bg-red-50 p-3 text-sm text-red-700">
+          <AlertCircle className="h-4 w-4 shrink-0" />
+          {error}
+        </p>
+      ) : (
+        <div className={cn("mt-4 overflow-x-auto transition-opacity", cargando && "opacity-50")}>
+          <div className="grid min-w-[520px] grid-cols-[48px_repeat(5,minmax(0,1fr))] gap-2">
+            <div />
+            {dias.map(({ nombre, fecha }) => (
+              <div
+                key={nombre}
+                className={cn(
+                  "flex h-9 items-center justify-center rounded-lg text-xs font-bold",
+                  esHoy(fecha) ? "bg-[#14848D] text-white" : "bg-slate-100 text-slate-600",
+                )}
+              >
+                {nombre} {fecha.getDate()}
+              </div>
+            ))}
 
-          {HORAS_EJEMPLO.map((hora, fila) => (
-            <div key={hora} className="contents">
-              <div className="flex h-10 items-center text-xs text-slate-500">{hora}</div>
-              {dias.map((_, columna) => (
-                <Celda key={columna} bloque={bloques(fila, columna)} />
-              ))}
-            </div>
-          ))}
+            {horas.map((hora) => (
+              <div key={hora} className="contents">
+                <div className="flex h-10 items-center text-xs text-slate-500">{hora}</div>
+                {dias.map(({ nombre, fecha }) => (
+                  <Celda key={nombre} bloque={bloque(fecha, hora)} />
+                ))}
+              </div>
+            ))}
+          </div>
+          {!cargando && horarios.length === 0 && (
+            <p className="mt-3 text-center text-xs text-slate-500">No tienes horarios registrados esta semana.</p>
+          )}
         </div>
-      </div>
+      )}
 
       <div className="mt-6 border-t border-slate-100 pt-5">
         <label htmlFor="enlace-clase" className="text-sm font-bold text-slate-700">
