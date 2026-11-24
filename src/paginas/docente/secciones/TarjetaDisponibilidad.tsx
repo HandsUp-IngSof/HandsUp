@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { AlertCircle, CheckCircle2, ChevronLeft, ChevronRight, Link2, Loader2, Plus } from "lucide-react";
+import { AlertCircle, CheckCircle2, ChevronLeft, ChevronRight, Loader2, Plus } from "lucide-react";
 
 import { usePerfil } from "@/componentes/RutaProtegida";
 import { Ventana } from "@/componentes/UI/Ventana";
@@ -12,6 +12,7 @@ import {
   obtenerHorariosSemana,
   type HorarioSemana,
 } from "@/paginas/docente/consultas";
+import { SeccionEnlaceClase } from "@/paginas/docente/secciones/SeccionEnlaceClase";
 import { VentanaNuevoHorario } from "@/paginas/docente/secciones/VentanaNuevoHorario";
 
 const DIAS = ["Lun", "Mar", "Mié", "Jue", "Vie"];
@@ -123,7 +124,7 @@ function Celda({ bloque, onAgregar, onEliminar }: CeldaProps) {
 }
 
 // Disponibilidad semanal del docente (SCRUM-41): ver, añadir y eliminar horarios en Supabase.
-// "Guardar enlace" se implementa en SCRUM-43.
+// Debajo va el enlace de videollamada (SCRUM-43).
 export function TarjetaDisponibilidad() {
   const perfil = usePerfil();
   const [desplazamiento, setDesplazamiento] = useState(0);
@@ -132,7 +133,6 @@ export function TarjetaDisponibilidad() {
   const [error, setError] = useState<string | null>(null);
   const [recarga, setRecarga] = useState(0);
   const [aviso, setAviso] = useState<string | null>(null);
-  const [enlace, setEnlace] = useState("");
 
   // Ventana de nuevo horario
   const [nuevoAbierto, setNuevoAbierto] = useState(false);
@@ -323,35 +323,7 @@ export function TarjetaDisponibilidad() {
         </div>
       )}
 
-      <div className="mt-6 border-t border-slate-100 pt-5">
-        <label htmlFor="enlace-clase" className="text-sm font-bold text-slate-700">
-          Enlace de clase
-        </label>
-        <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-          <div className="relative flex-1">
-            <Link2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#14848D]" />
-            <input
-              id="enlace-clase"
-              type="url"
-              value={enlace}
-              onChange={(e) => setEnlace(e.target.value)}
-              placeholder="meet.google.com/tu-clase-lsc"
-              className="h-11 w-full rounded-xl border border-slate-200 pl-9 pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#14848D]"
-            />
-          </div>
-          <button
-            type="button"
-            title="Próximamente"
-            className="h-11 rounded-xl bg-[#14848D] px-5 text-sm font-bold text-white hover:bg-[#0F6E75]"
-          >
-            Guardar enlace
-          </button>
-        </div>
-        <p className="mt-2 flex items-center gap-1.5 text-xs text-slate-500">
-          <CheckCircle2 className="h-3.5 w-3.5 text-[#14848D]" />
-          Tus estudiantes verán este enlace en sus clases reservadas.
-        </p>
-      </div>
+      <SeccionEnlaceClase />
 
       <VentanaNuevoHorario
         abierta={nuevoAbierto}
