@@ -198,7 +198,7 @@ export function TarjetaDisponibilidad() {
   const guardarHorario = async (inicio: Date, minutos: number) => {
     await crearHorario(perfil.id, inicio, minutos); // si falla, la ventana muestra el error
     setNuevoAbierto(false);
-    setAviso(`Horario agregado: ${formatoFechaHora.format(inicio)}.`);
+    setAviso(`Horario agregado: ${formatoFechaHora.format(inicio)}`);
     setDesplazamiento(semanasDesdeHoy(inicio)); // muestra la semana del horario nuevo
     setRecarga((n) => n + 1);
   };
@@ -214,7 +214,7 @@ export function TarjetaDisponibilidad() {
     setErrorEliminar(null);
     try {
       await eliminarHorario(porEliminar.horarioId);
-      setAviso(`Horario eliminado: ${formatoFechaHora.format(porEliminar.inicio)}.`);
+      setAviso(`Horario eliminado: ${formatoFechaHora.format(porEliminar.inicio)}`);
       setPorEliminar(null);
       setRecarga((n) => n + 1);
     } catch (err) {
