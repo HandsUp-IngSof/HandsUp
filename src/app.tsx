@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Cargando } from "@/componentes/UI/Cargando";
 
 // Carga diferida: cada pantalla se descarga solo cuando el usuario la abre,
@@ -8,6 +8,9 @@ const Login = lazy(() => import("@/paginas/auth/Login").then((m) => ({ default: 
 const Registro = lazy(() => import("@/paginas/auth/Registro").then((m) => ({ default: m.Registro })));
 const PanelEstudiante = lazy(() =>
     import("@/paginas/estudiante/Panel_estudiante").then((m) => ({ default: m.PanelEstudiante })),
+);
+const PerfilEstudiante = lazy(() =>
+    import("@/paginas/estudiante/PerfilEstudiante").then((m) => ({ default: m.PerfilEstudiante })),
 );
 const RutaProtegida = lazy(() =>
     import("@/componentes/RutaProtegida").then((m) => ({ default: m.RutaProtegida })),
@@ -45,10 +48,14 @@ export function App() {
                         path="/estudiante"
                         element={
                             <RutaProtegida rol="estudiante">
-                                <PanelEstudiante />
+                                <Outlet />
                             </RutaProtegida>
                         }
-                    />
+                    >
+                        <Route index element={<PanelEstudiante />} />
+                        <Route path="perfil" element={<PerfilEstudiante />} />
+                        <Route path="*" element={<Navigate to="/estudiante" replace />} />
+                    </Route>
                     <Route
                         path="/docente"
                         element={
