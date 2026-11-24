@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { AlertCircle, CheckCircle2, ExternalLink, Link2, Loader2 } from "lucide-react";
 
-import { usePerfil } from "@/componentes/RutaProtegida";
+import { useActualizarPerfil, usePerfil } from "@/componentes/RutaProtegida";
 import { cn } from "@/lib/utils";
 import {
   guardarEnlaceClase,
@@ -13,6 +13,7 @@ import {
 // Enlace de videollamada del docente (SCRUM-43): lo carga, lo valida, lo guarda y lo quita en Supabase.
 export function SeccionEnlaceClase() {
   const perfil = usePerfil();
+  const actualizarPerfil = useActualizarPerfil();
   const [guardado, setGuardado] = useState<string | null>(null); // el que esta en Supabase
   const [texto, setTexto] = useState(""); // lo que esta escrito en el campo
   const [cargando, setCargando] = useState(true);
@@ -27,13 +28,14 @@ export function SeccionEnlaceClase() {
         if (!activo) return;
         setGuardado(enlace);
         setTexto(enlace ?? "");
+        actualizarPerfil({ enlace_clase: enlace }); // lo usa la tarjeta "Tu proxima clase"
       })
       .catch((err: Error) => activo && setError(err.message))
       .finally(() => activo && setCargando(false));
     return () => {
       activo = false;
     };
-  }, [perfil.id]);
+  }, [perfil.id, actualizarPerfil]);
 
   // El aviso de exito desaparece solo despues de unos segundos.
   useEffect(() => {
@@ -50,6 +52,7 @@ export function SeccionEnlaceClase() {
       await guardarEnlaceClase(perfil.id, enlace);
       setGuardado(enlace);
       setTexto(enlace ?? "");
+      actualizarPerfil({ enlace_clase: enlace });
       setAviso(mensaje);
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo guardar el enlace.");

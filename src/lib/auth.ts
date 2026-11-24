@@ -12,6 +12,9 @@ export interface Perfil {
   apellido: string;
   rol: RolBD;
   avatar_url: string | null; // direccion de la foto de perfil (SCRUM-45) o null si no tiene
+  // Enlace de videollamada del docente (SCRUM-43). Se carga aparte desde el panel:
+  // undefined = todavia no se ha cargado, null = no tiene enlace.
+  enlace_clase?: string | null;
 }
 
 // La pantalla dice "docente", pero en la base de datos el rol se llama "profesor".
