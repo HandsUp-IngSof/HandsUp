@@ -38,9 +38,9 @@ export function AccesosRapidos({ estudiantesActivos }: { estudiantesActivos?: nu
     },
     {
       titulo: "Contactar estudiante",
-      descripcion: "Acompaña y resuelve sus dudas",
+      descripcion: "Correo y WhatsApp de tus estudiantes",
       icono: MessageCircle,
-      ruta: "/docente/mensajes",
+      ruta: "/docente/estudiantes",
       estilo: "rosado",
     },
   ];
