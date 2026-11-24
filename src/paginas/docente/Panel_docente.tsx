@@ -33,6 +33,7 @@ export function PanelDocente() {
       subtitulo="Lengua de Señas Colombiana · LSC"
       nombre={`${perfil.nombre} ${perfil.apellido}`.trim()}
       rolTexto="Docente de LSC"
+      avatarUrl={perfil.avatar_url}
     >
       <Suspense fallback={<Cargando pantallaCompleta={false} />}>
         <Outlet />

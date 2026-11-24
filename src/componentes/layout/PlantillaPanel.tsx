@@ -10,6 +10,7 @@ interface PlantillaPanelProps {
   subtitulo: string;
   nombre: string;
   rolTexto: string;
+  avatarUrl?: string | null;
   children: ReactNode;
 }
 
@@ -21,6 +22,7 @@ export function PlantillaPanel({
   subtitulo,
   nombre,
   rolTexto,
+  avatarUrl,
   children,
 }: PlantillaPanelProps) {
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -40,6 +42,7 @@ export function PlantillaPanel({
           subtitulo={subtitulo}
           nombre={nombre}
           rolTexto={rolTexto}
+          avatarUrl={avatarUrl}
           onAbrirMenu={() => setMenuAbierto(true)}
         />
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
