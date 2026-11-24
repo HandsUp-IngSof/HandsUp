@@ -1,5 +1,3 @@
-import { resumenEjemplo } from "@/paginas/docente/datosEjemplo";
-
 const formatoFecha = new Intl.DateTimeFormat("es-CO", {
   weekday: "long",
   day: "numeric",
@@ -7,8 +5,14 @@ const formatoFecha = new Intl.DateTimeFormat("es-CO", {
   year: "numeric",
 });
 
-// Saludo con la fecha de hoy y los contadores del docente.
-export function Saludo({ nombre }: { nombre: string }) {
+interface SaludoProps {
+  nombre: string;
+  estudiantesActivos?: number; // undefined mientras carga
+  clasesSemana?: number;
+}
+
+// Saludo con la fecha de hoy y los contadores reales del docente.
+export function Saludo({ nombre, estudiantesActivos, clasesSemana }: SaludoProps) {
   return (
     <section className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
       <div>
@@ -25,13 +29,15 @@ export function Saludo({ nombre }: { nombre: string }) {
 
       <div className="flex shrink-0 items-center gap-6">
         <div>
-          <p className="text-3xl font-bold text-[#14848D]">{resumenEjemplo.estudiantesActivos}</p>
-          <p className="text-xs text-slate-500">estudiantes activos</p>
+          <p className="text-3xl font-bold text-[#14848D]">{estudiantesActivos ?? "—"}</p>
+          <p className="text-xs text-slate-500">
+            {estudiantesActivos === 1 ? "estudiante activo" : "estudiantes activos"}
+          </p>
         </div>
         <div className="h-10 w-px bg-slate-200" />
         <div>
-          <p className="text-3xl font-bold text-[#B5246E]">{resumenEjemplo.clasesSemana}</p>
-          <p className="text-xs text-slate-500">clases esta semana</p>
+          <p className="text-3xl font-bold text-[#B5246E]">{clasesSemana ?? "—"}</p>
+          <p className="text-xs text-slate-500">{clasesSemana === 1 ? "clase esta semana" : "clases esta semana"}</p>
         </div>
       </div>
     </section>

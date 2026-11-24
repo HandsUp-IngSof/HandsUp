@@ -3,7 +3,6 @@ import type { LucideIcon } from "lucide-react";
 import { ArrowUpRight, CalendarDays, MessageCircle, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { resumenEjemplo } from "@/paginas/docente/datosEjemplo";
 
 interface Acceso {
   titulo: string;
@@ -13,32 +12,39 @@ interface Acceso {
   estilo: "principal" | "verde" | "rosado";
 }
 
-const accesos: Acceso[] = [
-  {
-    titulo: "Calendario",
-    descripcion: "Disponibilidad y enlace de clase",
-    icono: CalendarDays,
-    ruta: "/docente/calendario",
-    estilo: "principal",
-  },
-  {
-    titulo: "Mis estudiantes",
-    descripcion: `${resumenEjemplo.estudiantesActivos} personas aprendiendo contigo`,
-    icono: Users,
-    ruta: "/docente/estudiantes",
-    estilo: "verde",
-  },
-  {
-    titulo: "Contactar estudiante",
-    descripcion: "Acompaña y resuelve sus dudas",
-    icono: MessageCircle,
-    ruta: "/docente/mensajes",
-    estilo: "rosado",
-  },
-];
+function textoEstudiantes(cantidad?: number): string {
+  if (cantidad === undefined) return "Tus estudiantes y su avance";
+  if (cantidad === 0) return "Aún no tienes estudiantes";
+  if (cantidad === 1) return "1 persona aprendiendo contigo";
+  return `${cantidad} personas aprendiendo contigo`;
+}
 
-// Tarjetas de acceso rapido a las secciones del panel.
-export function AccesosRapidos() {
+// Tarjetas de acceso rapido a las paginas del panel.
+export function AccesosRapidos({ estudiantesActivos }: { estudiantesActivos?: number }) {
+  const accesos: Acceso[] = [
+    {
+      titulo: "Calendario",
+      descripcion: "Disponibilidad y enlace de clase",
+      icono: CalendarDays,
+      ruta: "/docente/calendario",
+      estilo: "principal",
+    },
+    {
+      titulo: "Mis estudiantes",
+      descripcion: textoEstudiantes(estudiantesActivos),
+      icono: Users,
+      ruta: "/docente/estudiantes",
+      estilo: "verde",
+    },
+    {
+      titulo: "Contactar estudiante",
+      descripcion: "Acompaña y resuelve sus dudas",
+      icono: MessageCircle,
+      ruta: "/docente/mensajes",
+      estilo: "rosado",
+    },
+  ];
+
   return (
     <section className="grid gap-4 md:grid-cols-3">
       {accesos.map(({ titulo, descripcion, icono: Icono, ruta, estilo }) => {
