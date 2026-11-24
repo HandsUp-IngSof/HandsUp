@@ -42,7 +42,23 @@ function traducirError(mensaje: string): string {
   return "No se pudo completar la operación. Intenta de nuevo.";
 }
 
+// Perfil guardado en memoria: se consulta a Supabase una sola vez por sesion y se reutiliza
+// al navegar entre pantallas, en vez de repetir la consulta en cada cambio de pagina.
+let perfilEnMemoria: Perfil | null = null;
+
+// Borra el perfil guardado. Llamarla tambien despues de editar el perfil del usuario.
+export function olvidarPerfil(): void {
+  perfilEnMemoria = null;
+}
+
+// Si la sesion se cierra (boton, expiracion u otra pestana), se descarta el perfil guardado.
+supabase.auth.onAuthStateChange((evento) => {
+  if (evento === "SIGNED_OUT") olvidarPerfil();
+});
+
 export async function obtenerPerfil(idUsuario: string): Promise<Perfil | null> {
+  if (perfilEnMemoria?.id === idUsuario) return perfilEnMemoria;
+
   const { data, error } = await supabase
     .from("perfiles")
     .select("id, nombre, apellido, rol")
@@ -50,6 +66,7 @@ export async function obtenerPerfil(idUsuario: string): Promise<Perfil | null> {
     .maybeSingle();
 
   if (error) throw new Error("No se pudo consultar el perfil del usuario.");
+  perfilEnMemoria = data;
   return data;
 }
 
@@ -66,12 +83,12 @@ export async function iniciarSesion(
   const perfil = await obtenerPerfil(data.user.id);
 
   if (!perfil) {
-    await supabase.auth.signOut();
+    await cerrarSesion();
     throw new Error("Tu cuenta no tiene un perfil asociado. Contacta al administrador.");
   }
 
   if (perfil.rol !== ROL_EN_BD[rolElegido]) {
-    await supabase.auth.signOut();
+    await cerrarSesion();
     throw new Error(`Esta cuenta no está registrada como ${rolElegido}. Elige el rol correcto.`);
   }
 
@@ -129,6 +146,7 @@ export async function registrarUsuario(datos: DatosRegistro): Promise<ResultadoR
 }
 
 export async function cerrarSesion(): Promise<void> {
+  olvidarPerfil();
   await supabase.auth.signOut();
 }
 

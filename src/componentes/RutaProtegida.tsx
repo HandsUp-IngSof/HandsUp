@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
+import { Cargando } from "@/componentes/UI/Cargando";
 import { supabase } from "@/lib/supabase";
 import { obtenerPerfil, type Perfil, type RolBD } from "@/lib/auth";
 
@@ -52,11 +53,7 @@ export function RutaProtegida({ rol, children }: RutaProtegidaProps) {
   }, [rol]);
 
   if (estado === "cargando") {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-slate-500 font-['Fredoka',sans-serif]">
-        Cargando...
-      </div>
-    );
+    return <Cargando texto="Verificando tu sesión..." />;
   }
 
   if (estado === "denegado" || !perfil) {

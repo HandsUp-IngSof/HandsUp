@@ -5,9 +5,13 @@ import { Mail, Eye, EyeOff, ArrowRight, ShieldCheck, HelpCircle, CheckCircle2, A
 import { Button } from "@/componentes/UI/Boton";
 import { Input } from "@/componentes/UI/Input";
 import { RoleSelector } from "@/componentes/UI/RoleSelector";
-import { iniciarSesion, rutaSegunRol, type RolPantalla } from "@/lib/auth";
+import type { RolPantalla } from "@/lib/auth";
 
-import isotipo from "@/recursos/isotipo.png";
+// La logica de autenticacion (y la libreria de Supabase) se descarga cuando el usuario
+// empieza a llenar el formulario, no al abrir la pagina: el login aparece mas rapido.
+const cargarAuth = () => import("@/lib/auth");
+
+import isotipo from "@/recursos/isotipo.webp";
 
 export function Login() {
   const navigate = useNavigate();
@@ -32,6 +36,7 @@ export function Login() {
 
     setCargando(true);
     try {
+      const { iniciarSesion, rutaSegunRol } = await cargarAuth();
       const perfil = await iniciarSesion(email.trim(), password, role);
       navigate(rutaSegunRol(perfil.rol), { replace: true });
     } catch (err) {
@@ -144,7 +149,7 @@ export function Login() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} onFocus={() => void cargarAuth()} className="space-y-5">
             
             <div className="space-y-2">
               <label className="text-xs font-semibold text-slate-600">

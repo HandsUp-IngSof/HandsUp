@@ -5,7 +5,7 @@ import { RoleSelector } from "@/componentes/UI/RoleSelector";
 import { Button } from "@/componentes/UI/Boton";
 import { Input } from "@/componentes/UI/Input";
 import { registrarUsuario, separarNombre, type RolPantalla } from "@/lib/auth";
-import isotipo from "@/recursos/isotipo.png";
+import isotipo from "@/recursos/isotipo.webp";
 
 interface CampoProps {
     id: string;
