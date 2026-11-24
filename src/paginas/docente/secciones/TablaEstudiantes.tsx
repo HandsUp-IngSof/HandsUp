@@ -1,8 +1,10 @@
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { AlertCircle, Loader2, MessageCircle } from "lucide-react";
 
 import { cn, iniciales } from "@/lib/utils";
 import type { EstudianteResumen } from "@/paginas/docente/resumenDocente";
+import { VentanaContactoEstudiante } from "@/paginas/docente/secciones/VentanaContactoEstudiante";
 
 interface TablaEstudiantesProps {
   estudiantes: EstudianteResumen[];
@@ -17,7 +19,7 @@ interface TablaEstudiantesProps {
 }
 
 // Estudiantes del docente con su avance real (SCRUM-42).
-// El boton de mensaje se conecta en SCRUM-51.
+// El boton de mensaje abre los datos de contacto del estudiante (SCRUM-51).
 export function TablaEstudiantes({
   estudiantes,
   cargando,
@@ -26,6 +28,9 @@ export function TablaEstudiantes({
   mensajeVacio = "Aún no tienes estudiantes. Cuando alguien agende una clase contigo, aparecerá aquí.",
   controles,
 }: TablaEstudiantesProps) {
+  const [contacto, setContacto] = useState<{ id: string; nombre: string } | null>(null);
+  const cerrarContacto = useCallback(() => setContacto(null), []);
+
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -108,8 +113,9 @@ export function TablaEstudiantes({
                   <td className="py-3 text-right">
                     <button
                       type="button"
-                      title="Próximamente"
-                      aria-label={`Enviar mensaje a ${e.nombre}`}
+                      onClick={() => setContacto({ id: e.id, nombre: e.nombre })}
+                      title="Ver contacto"
+                      aria-label={`Ver contacto de ${e.nombre}`}
                       className="rounded-lg p-1.5 text-[#14848D] hover:bg-[#E7F3F3]"
                     >
                       <MessageCircle className="h-4 w-4" />
@@ -121,6 +127,8 @@ export function TablaEstudiantes({
           </table>
         </div>
       )}
+
+      <VentanaContactoEstudiante estudiante={contacto} onCerrar={cerrarContacto} />
     </section>
   );
 }
