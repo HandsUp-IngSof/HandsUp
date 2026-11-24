@@ -132,7 +132,7 @@ export async function obtenerResumenDocente(profesorId: string): Promise<Resumen
       fecha: capitalizar(formatoFechaLarga.format(inicio)),
       horario: `${formatoHora.format(inicio)} – ${formatoHora.format(fin)} · Clase individual`,
       nota: despues
-        ? `Después tienes clase con ${(nombres.get(despues.estudiante_id) ?? "otro estudiante").split(" ")[0]}: ${fechaRelativa(new Date(despues.fecha_inicio)).toLowerCase()}.`
+        ? `Después tienes clase con ${(nombres.get(despues.estudiante_id) ?? "otro estudiante").split(" ")[0]}: ${fechaRelativa(new Date(despues.fecha_inicio)).toLowerCase()}`
         : undefined,
     };
   }
