@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Bell, LogOut, Menu, MoreHorizontal } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Bell, LogOut, Menu, MoreHorizontal, UserRound } from "lucide-react";
 
 import { Avatar } from "@/componentes/UI/Avatar";
 import { cerrarSesion } from "@/lib/auth";
@@ -11,11 +11,20 @@ interface EncabezadoProps {
   nombre: string;
   rolTexto: string;
   avatarUrl?: string | null;
+  rutaPerfil?: string; // pagina "Mi perfil" (SCRUM-48)
   onAbrirMenu: () => void;
 }
 
 // Barra superior de los paneles: titulo, notificaciones, usuario y menu de opciones.
-export function Encabezado({ titulo, subtitulo, nombre, rolTexto, avatarUrl, onAbrirMenu }: EncabezadoProps) {
+export function Encabezado({
+  titulo,
+  subtitulo,
+  nombre,
+  rolTexto,
+  avatarUrl,
+  rutaPerfil,
+  onAbrirMenu,
+}: EncabezadoProps) {
   const navigate = useNavigate();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -81,6 +90,16 @@ export function Encabezado({ titulo, subtitulo, nombre, rolTexto, avatarUrl, onA
 
         {menuAbierto && (
           <div className="absolute right-0 mt-2 w-48 rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg">
+            {rutaPerfil && (
+              <Link
+                to={rutaPerfil}
+                onClick={() => setMenuAbierto(false)}
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+              >
+                <UserRound className="h-4 w-4" />
+                Mi perfil
+              </Link>
+            )}
             <button
               type="button"
               onClick={salir}

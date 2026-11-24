@@ -29,6 +29,9 @@ const EstudiantesDocente = lazy(() =>
 const MensajesDocente = lazy(() =>
     import("@/paginas/docente/MensajesDocente").then((m) => ({ default: m.MensajesDocente })),
 );
+const PerfilDocente = lazy(() =>
+    import("@/paginas/docente/PerfilDocente").then((m) => ({ default: m.PerfilDocente })),
+);
 
 export function App() {
     return (
@@ -58,6 +61,7 @@ export function App() {
                         <Route path="calendario" element={<CalendarioDocente />} />
                         <Route path="estudiantes" element={<EstudiantesDocente />} />
                         <Route path="mensajes" element={<MensajesDocente />} />
+                        <Route path="perfil" element={<PerfilDocente />} />
                         <Route path="*" element={<Navigate to="/docente" replace />} />
                     </Route>
                     <Route path="*" element={<Navigate to="/login" replace />} />
