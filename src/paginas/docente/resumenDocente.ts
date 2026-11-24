@@ -31,6 +31,8 @@ export interface EstudianteResumen {
   modulo: string;
   progreso: number;
   proximaClase: string;
+  // Momento de la proxima clase (milisegundos) o null si no tiene. Se usa para ordenar.
+  proximaInicio: number | null;
   estado: string;
   requiereAtencion: boolean;
 }
@@ -88,7 +90,8 @@ export async function obtenerResumenDocente(profesorId: string): Promise<Resumen
 
   const totalLecciones = lecciones.data.length;
 
-  const estudiantes: EstudianteResumen[] = idsEstudiantes.map((id) => {
+  const estudiantes: EstudianteResumen[] = idsEstudiantes
+    .map((id) => {
     const completadas = new Set(
       progreso.data.filter((p) => p.estudiante_id === id).map((p) => p.leccion_id),
     );
@@ -102,10 +105,19 @@ export async function obtenerResumenDocente(profesorId: string): Promise<Resumen
       modulo: siguiente?.titulo ?? (totalLecciones > 0 ? "Completó todas las lecciones" : "Sin lecciones"),
       progreso: totalLecciones > 0 ? Math.round((completadas.size / totalLecciones) * 100) : 0,
       proximaClase: proxima ? fechaRelativa(new Date(proxima.fecha_inicio)) : "Sin clase agendada",
+      proximaInicio: proxima ? new Date(proxima.fecha_inicio).getTime() : null,
       estado: porConfirmar ? "Clase por confirmar" : proxima ? "Al día" : "Sin clases próximas",
       requiereAtencion: porConfirmar,
     };
-  });
+    })
+    // Primero quien tiene la clase mas cercana; los que no tienen clase proxima van al final,
+    // en orden alfabetico.
+    .sort((a, b) => {
+      if (a.proximaInicio !== null && b.proximaInicio !== null) return a.proximaInicio - b.proximaInicio;
+      if (a.proximaInicio !== null) return -1;
+      if (b.proximaInicio !== null) return 1;
+      return a.nombre.localeCompare(b.nombre, "es");
+    });
 
   let proximaClase: ProximaClase | null = null;
   if (futuras.length > 0) {
