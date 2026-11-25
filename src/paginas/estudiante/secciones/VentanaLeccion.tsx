@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { AlertCircle, ArrowRight, CheckCircle2, ExternalLink, ListChecks, Loader2, Trophy } from "lucide-react";
+import { AlertCircle, ArrowRight, CheckCircle2, ListChecks, Loader2, Trophy } from "lucide-react";
 
+import { ReproductorVideo } from "@/componentes/UI/ReproductorVideo";
 import { Ventana } from "@/componentes/UI/Ventana";
 import { obtenerEjerciciosEstudiante, type EjercicioEstudiante } from "@/lib/ejercicios";
 import { iconoDeInsignia } from "@/lib/iconos";
-import { enlaceIncrustable } from "@/lib/video";
 import { useDatosEstudiante } from "@/paginas/estudiante/DatosEstudiante";
 import type { Insignia, LeccionVista } from "@/paginas/estudiante/modelo";
 import { EjerciciosLeccion } from "@/paginas/estudiante/secciones/EjerciciosLeccion";
@@ -63,7 +63,6 @@ export function VentanaLeccion({ leccion, siguiente, onCerrar, onIrASiguiente }:
   };
 
   const video = leccion?.videoUrl ?? null;
-  const incrustado = video ? enlaceIncrustable(video) : null;
   const completada = leccion?.estado === "completada";
   const puedeCompletar = leccion?.estado === "siguiente";
   const tieneEjercicios = (ejercicios?.length ?? 0) > 0;
@@ -77,29 +76,8 @@ export function VentanaLeccion({ leccion, siguiente, onCerrar, onIrASiguiente }:
             {leccion.descripcion && <p className="mt-1 text-sm text-slate-500">{leccion.descripcion}</p>}
           </div>
 
-          {video &&
-            (incrustado ? (
-              <div className="aspect-video overflow-hidden rounded-xl bg-slate-900">
-                <iframe
-                  src={incrustado}
-                  title={`Video de la lección: ${leccion.titulo}`}
-                  className="h-full w-full"
-                  allow="accelerometer; encrypted-media; picture-in-picture"
-                  allowFullScreen
-                  referrerPolicy="strict-origin-when-cross-origin"
-                />
-              </div>
-            ) : (
-              <a
-                href={video}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl bg-[#E3F3F0] px-4 py-2.5 text-sm font-bold text-[#14848D] hover:bg-[#D3ECE8]"
-              >
-                <ExternalLink className="h-4 w-4" />
-                Ver el video de la lección
-              </a>
-            ))}
+          {/* Reproduccion integrada: YouTube, Vimeo, Google Drive o archivo de video (SCRUM-40) */}
+          {video && <ReproductorVideo enlace={video} titulo={`Video de la lección: ${leccion.titulo}`} />}
 
           {leccion.contenido ? (
             <div className="whitespace-pre-wrap rounded-xl bg-slate-50 p-4 text-sm leading-relaxed text-slate-700">

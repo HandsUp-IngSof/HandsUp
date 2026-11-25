@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { AlertCircle, Loader2 } from "lucide-react";
 
+import { ReproductorVideo } from "@/componentes/UI/ReproductorVideo";
 import { Ventana } from "@/componentes/UI/Ventana";
 import { ICONOS_MODULO } from "@/lib/iconos";
 import { cn } from "@/lib/utils";
+import { normalizarEnlaceVideo } from "@/lib/video";
 import {
   LECCION_VACIA,
   LIMITES,
@@ -181,6 +183,14 @@ export function VentanaLeccionDocente({ abierta, inicial, onCerrar, onGuardar }:
     setError(null);
   }, [abierta, inicial]);
 
+  // Enlace valido para la vista previa (null si esta vacio o tiene un error).
+  let vistaPrevia: string | null = null;
+  try {
+    vistaPrevia = normalizarEnlaceVideo(datos.videoUrl);
+  } catch {
+    vistaPrevia = null;
+  }
+
   const guardar = async (evento: React.FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
     const mensaje = validarLeccion(datos);
@@ -233,9 +243,18 @@ export function VentanaLeccionDocente({ abierta, inicial, onCerrar, onGuardar }:
             className={campo}
           />
           <span className="mt-1 block text-xs font-normal text-slate-500">
-            Los videos de YouTube y Vimeo se ven dentro de la lección; otros enlaces se abren aparte.
+            YouTube, Vimeo, Google Drive y archivos .mp4 o .webm se reproducen dentro de la lección; otros enlaces se
+            abren aparte.
           </span>
         </label>
+
+        {/* Vista previa del video tal como lo vera el estudiante (SCRUM-40) */}
+        {vistaPrevia && (
+          <div>
+            <p className="mb-1.5 text-xs font-semibold text-slate-600">Vista previa</p>
+            <ReproductorVideo enlace={vistaPrevia} titulo="Vista previa del video de la lección" />
+          </div>
+        )}
 
         <label className="block text-sm font-semibold text-slate-700">
           Contenido <span className="font-normal text-slate-400">(opcional)</span>
