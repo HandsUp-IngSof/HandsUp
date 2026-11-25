@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Hand, Play } from "lucide-react";
 
-import type { SiguientePaso } from "@/paginas/estudiante/datosEjemplo";
+import type { SiguientePaso } from "@/paginas/estudiante/modelo";
 
 // Ilustracion provisional mientras no tengamos la foto de la maqueta.
 function Ilustracion() {
@@ -26,21 +26,21 @@ function Ilustracion() {
   );
 }
 
-// "Tu siguiente paso": la leccion con la que el estudiante debe continuar (SCRUM-58; datos en SCRUM-33).
-// "Continuar leccion" abre el modulo en curso.
-export function TarjetaSiguientePaso({ paso, ruta }: { paso: SiguientePaso; ruta: string }) {
+// "Tu siguiente paso": lo que el estudiante debe hacer ahora (SCRUM-33): continuar una leccion,
+// agendar su clase de bienvenida, etc. Lo calcula modelo.ts.
+export function TarjetaSiguientePaso({ paso }: { paso: SiguientePaso }) {
   return (
     <section className="grid overflow-hidden rounded-2xl border border-slate-200 bg-[#E3F3F0] sm:grid-cols-[minmax(0,1fr)_240px]">
       <div className="p-6">
         <p className="text-[11px] font-bold uppercase tracking-wider text-[#0F6E75]">Tu siguiente paso</p>
         <h2 className="mt-2 text-2xl font-bold text-slate-800">{paso.titulo}</h2>
-        <p className="mt-2 text-sm text-slate-600">{paso.leccion}</p>
+        <p className="mt-2 text-sm text-slate-600">{paso.detalle}</p>
         <Link
-          to={ruta}
+          to={paso.ruta}
           className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#14848D] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#0F6E75]"
         >
           <Play className="h-4 w-4" />
-          Continuar lección
+          {paso.textoBoton}
         </Link>
       </div>
       <Ilustracion />

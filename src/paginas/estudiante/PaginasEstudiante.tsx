@@ -1,8 +1,9 @@
-import { BookOpen, CalendarDays, MessagesSquare } from "lucide-react";
+import { BookOpen, MessagesSquare } from "lucide-react";
 
 import { PaginaPronto } from "@/componentes/layout/PaginaPronto";
 
-// Paginas del menu del estudiante que todavia no tienen contenido (SCRUM-58).
+// Paginas del menu del estudiante que todavia no tienen contenido.
+// "Mis clases" ya esta implementada en ClasesEstudiante.tsx (SCRUM-39).
 
 export function DiccionarioEstudiante() {
   return (
@@ -12,19 +13,6 @@ export function DiccionarioEstudiante() {
       icono={BookOpen}
       mensaje="Muy pronto podrás buscar señas aquí"
       detalle="Estamos preparando el diccionario con videos de cada seña."
-    />
-  );
-}
-
-// Se implementa en SCRUM-39 (agendamiento de clases por parte del estudiante).
-export function ClasesEstudiante() {
-  return (
-    <PaginaPronto
-      titulo="Mis clases"
-      descripcion="Reserva tus clases en vivo y revisa las que tienes agendadas."
-      icono={CalendarDays}
-      mensaje="Muy pronto podrás reservar tus clases aquí"
-      detalle="Verás los horarios de tus docentes y podrás agendar una clase en vivo."
     />
   );
 }

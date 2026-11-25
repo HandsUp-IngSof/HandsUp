@@ -1,15 +1,25 @@
 import { useEffect, type ReactNode } from "react";
 import { X } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+
+const ANCHOS = {
+  md: "max-w-md",
+  lg: "max-w-lg",
+  "2xl": "max-w-2xl",
+};
+
 interface VentanaProps {
   titulo: string;
   abierta: boolean;
   onCerrar: () => void;
+  // Ancho maximo de la ventana. Por defecto "md" (formularios y confirmaciones cortas).
+  ancho?: keyof typeof ANCHOS;
   children: ReactNode;
 }
 
 // Ventana emergente (modal) reutilizable. Se cierra con la X, con Escape o al hacer clic afuera.
-export function Ventana({ titulo, abierta, onCerrar, children }: VentanaProps) {
+export function Ventana({ titulo, abierta, onCerrar, ancho = "md", children }: VentanaProps) {
   useEffect(() => {
     if (!abierta) return;
     const alPresionar = (evento: KeyboardEvent) => {
@@ -28,7 +38,12 @@ export function Ventana({ titulo, abierta, onCerrar, children }: VentanaProps) {
         if (evento.target === evento.currentTarget) onCerrar();
       }}
     >
-      <div role="dialog" aria-modal="true" aria-label={titulo} className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={titulo}
+        className={cn("max-h-[90vh] w-full overflow-y-auto rounded-2xl bg-white p-6 shadow-xl", ANCHOS[ancho])}
+      >
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-800">{titulo}</h2>
           <button

@@ -1,6 +1,6 @@
 import { Suspense, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { CalendarDays, LayoutGrid, MessagesSquare, Users } from "lucide-react";
+import { BookOpen, CalendarDays, LayoutGrid, MessagesSquare, Users } from "lucide-react";
 
 import { usePerfil } from "@/componentes/RutaProtegida";
 import { PlantillaPanel } from "@/componentes/layout/PlantillaPanel";
@@ -10,12 +10,13 @@ import { Cargando } from "@/componentes/UI/Cargando";
 const enlacesDocente: EnlaceMenu[] = [
   { texto: "Mi espacio", icono: LayoutGrid, ruta: "/docente", exacto: true },
   { texto: "Calendario", icono: CalendarDays, ruta: "/docente/calendario" },
+  { texto: "Mis módulos", icono: BookOpen, ruta: "/docente/modulos" },
   { texto: "Mis estudiantes", icono: Users, ruta: "/docente/estudiantes" },
   { texto: "Mensajes", icono: MessagesSquare, ruta: "/docente/mensajes", insignia: 2 },
 ];
 
 // Estructura del panel docente (SCRUM-57). El menu lateral y el encabezado quedan fijos;
-// en <Outlet /> se muestra la pagina elegida: inicio, calendario, estudiantes o mensajes.
+// en <Outlet /> se muestra la pagina elegida: inicio, calendario, modulos, estudiantes o mensajes.
 export function PanelDocente() {
   const perfil = usePerfil();
   const { pathname } = useLocation();

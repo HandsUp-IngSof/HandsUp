@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
-import { ArrowUpRight, CalendarDays, MessageCircle, Users } from "lucide-react";
+import { ArrowUpRight, BookOpen, CalendarDays, MessageCircle, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -30,6 +30,13 @@ export function AccesosRapidos({ estudiantesActivos }: { estudiantesActivos?: nu
       estilo: "principal",
     },
     {
+      titulo: "Mis módulos",
+      descripcion: "Diseña módulos y lecciones",
+      icono: BookOpen,
+      ruta: "/docente/modulos",
+      estilo: "verde",
+    },
+    {
       titulo: "Mis estudiantes",
       descripcion: textoEstudiantes(estudiantesActivos),
       icono: Users,
@@ -46,7 +53,7 @@ export function AccesosRapidos({ estudiantesActivos }: { estudiantesActivos?: nu
   ];
 
   return (
-    <section className="grid gap-4 md:grid-cols-3">
+    <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {accesos.map(({ titulo, descripcion, icono: Icono, ruta, estilo }) => {
         const principal = estilo === "principal";
         return (

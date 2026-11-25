@@ -18,7 +18,13 @@ const DiccionarioEstudiante = lazy(() =>
     import("@/paginas/estudiante/PaginasEstudiante").then((m) => ({ default: m.DiccionarioEstudiante })),
 );
 const ClasesEstudiante = lazy(() =>
-    import("@/paginas/estudiante/PaginasEstudiante").then((m) => ({ default: m.ClasesEstudiante })),
+    import("@/paginas/estudiante/ClasesEstudiante").then((m) => ({ default: m.ClasesEstudiante })),
+);
+const ProgresoEstudiante = lazy(() =>
+    import("@/paginas/estudiante/ProgresoEstudiante").then((m) => ({ default: m.ProgresoEstudiante })),
+);
+const ContactoDocentePagina = lazy(() =>
+    import("@/paginas/estudiante/ContactoDocente").then((m) => ({ default: m.ContactoDocentePagina })),
 );
 const MensajesEstudiante = lazy(() =>
     import("@/paginas/estudiante/PaginasEstudiante").then((m) => ({ default: m.MensajesEstudiante })),
@@ -49,6 +55,9 @@ const EstudiantesDocente = lazy(() =>
 const MensajesDocente = lazy(() =>
     import("@/paginas/docente/MensajesDocente").then((m) => ({ default: m.MensajesDocente })),
 );
+const ModulosDocente = lazy(() =>
+    import("@/paginas/docente/ModulosDocente").then((m) => ({ default: m.ModulosDocente })),
+);
 const PerfilDocente = lazy(() =>
     import("@/paginas/docente/PerfilDocente").then((m) => ({ default: m.PerfilDocente })),
 );
@@ -70,7 +79,9 @@ export function App() {
                         }
                     >
                         <Route index element={<InicioEstudiante />} />
-                        <Route path="modulo/:codigo" element={<ModuloEstudiante />} />
+                        <Route path="modulo/:moduloId" element={<ModuloEstudiante />} />
+                        <Route path="progreso" element={<ProgresoEstudiante />} />
+                        <Route path="docente" element={<ContactoDocentePagina />} />
                         <Route path="diccionario" element={<DiccionarioEstudiante />} />
                         <Route path="clases" element={<ClasesEstudiante />} />
                         <Route path="mensajes" element={<MensajesEstudiante />} />
@@ -87,6 +98,7 @@ export function App() {
                     >
                         <Route index element={<InicioDocente />} />
                         <Route path="calendario" element={<CalendarioDocente />} />
+                        <Route path="modulos" element={<ModulosDocente />} />
                         <Route path="estudiantes" element={<EstudiantesDocente />} />
                         <Route path="mensajes" element={<MensajesDocente />} />
                         <Route path="perfil" element={<PerfilDocente />} />
