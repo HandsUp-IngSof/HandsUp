@@ -1,5 +1,16 @@
 import { useEffect, useState } from "react";
-import { AlertCircle, CalendarPlus, ExternalLink, Loader2, Mail, MessageCircle, Phone, ShieldCheck, Video } from "lucide-react";
+import {
+  AlertCircle,
+  CalendarPlus,
+  ExternalLink,
+  Loader2,
+  Mail,
+  MessageCircle,
+  MessagesSquare,
+  Phone,
+  ShieldCheck,
+  Video,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { usePerfil } from "@/componentes/RutaProtegida";
@@ -63,7 +74,16 @@ function TarjetaDocente({ docente, nombreEstudiante }: { docente: ContactoDocent
         </div>
       </dl>
 
-      <div className="mt-4 grid gap-2 sm:grid-cols-3">
+      {/* Chat dentro de handsUp (SCRUM-44), igual que en el contacto del estudiante (SCRUM-51) */}
+      <Link
+        to={`/estudiante/mensajes?con=${docente.id}`}
+        className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[#B5246E] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#9A1F5E]"
+      >
+        <MessagesSquare className="h-4 w-4" />
+        Enviar mensaje en handsUp
+      </Link>
+
+      <div className="mt-2 grid gap-2 sm:grid-cols-3">
         {docente.telefono ? (
           <a
             href={enlaceWhatsApp(docente.telefono, saludo)}
@@ -130,7 +150,7 @@ export function ContactoDocentePagina() {
     <div className="mx-auto max-w-3xl">
       <EncabezadoSeccion
         titulo="Contactar al docente"
-        descripcion="Escríbele a tu docente por WhatsApp o correo para resolver dudas de tus clases."
+        descripcion="Escríbele a tu docente por el chat de handsUp, WhatsApp o correo para resolver dudas de tus clases."
       />
 
       {cargando ? (
