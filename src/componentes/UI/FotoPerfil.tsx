@@ -109,7 +109,7 @@ export function FotoPerfil({ value, onChange, maxSizeMB = 2, urlActual = null, o
             </div>
 
             <p className="text-xs text-[#5E7F82] font-['Fredoka',sans-serif]">
-                Foto de perfil {opcional && <span className="text-[#7C9496]">(opcional)</span>}
+                Foto de perfil {opcional && <span className="text-slate-500">(opcional)</span>}
             </p>
             {error && <p className="text-xs text-red-500">{error}</p>}
         </div>

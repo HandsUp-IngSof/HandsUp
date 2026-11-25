@@ -102,7 +102,7 @@ export function VentanaModulo({ abierta, inicial, onCerrar, onGuardar }: Ventana
         </label>
 
         <label className="block text-sm font-semibold text-slate-700">
-          Descripción <span className="font-normal text-slate-400">(opcional)</span>
+          Descripción <span className="font-normal text-slate-500">(opcional)</span>
           <textarea
             value={datos.descripcion}
             onChange={(e) => setDatos({ ...datos, descripcion: e.target.value })}
@@ -138,7 +138,7 @@ export function VentanaModulo({ abierta, inicial, onCerrar, onGuardar }: Ventana
         </fieldset>
 
         <label className="block text-sm font-semibold text-slate-700">
-          Duración estimada en minutos <span className="font-normal text-slate-400">(opcional)</span>
+          Duración estimada en minutos <span className="font-normal text-slate-500">(opcional)</span>
           <input
             type="number"
             min={1}
@@ -222,7 +222,7 @@ export function VentanaLeccionDocente({ abierta, inicial, onCerrar, onGuardar }:
         </label>
 
         <label className="block text-sm font-semibold text-slate-700">
-          Descripción corta <span className="font-normal text-slate-400">(opcional)</span>
+          Descripción corta <span className="font-normal text-slate-500">(opcional)</span>
           <input
             value={datos.descripcion}
             onChange={(e) => setDatos({ ...datos, descripcion: e.target.value })}
@@ -233,7 +233,7 @@ export function VentanaLeccionDocente({ abierta, inicial, onCerrar, onGuardar }:
         </label>
 
         <label className="block text-sm font-semibold text-slate-700">
-          Enlace del video <span className="font-normal text-slate-400">(opcional)</span>
+          Enlace del video <span className="font-normal text-slate-500">(opcional)</span>
           <input
             type="url"
             inputMode="url"
@@ -257,7 +257,7 @@ export function VentanaLeccionDocente({ abierta, inicial, onCerrar, onGuardar }:
         )}
 
         <label className="block text-sm font-semibold text-slate-700">
-          Contenido <span className="font-normal text-slate-400">(opcional)</span>
+          Contenido <span className="font-normal text-slate-500">(opcional)</span>
           <textarea
             value={datos.contenido}
             onChange={(e) => setDatos({ ...datos, contenido: e.target.value })}
@@ -266,7 +266,7 @@ export function VentanaLeccionDocente({ abierta, inicial, onCerrar, onGuardar }:
             placeholder="Explica la seña, cómo se mueve la mano, consejos de práctica..."
             className={campo}
           />
-          <span className="mt-1 block text-right text-xs font-normal text-slate-400">
+          <span className="mt-1 block text-right text-xs font-normal text-slate-500">
             {datos.contenido.length}/{LIMITES.contenidoLeccion}
           </span>
         </label>

@@ -104,7 +104,7 @@ function Nodo({ modulo, indice }: { modulo: ModuloVista; indice: number }) {
         className={cn(
           "flex h-11 w-11 items-center justify-center rounded-full border-2 bg-white",
           estado === "bloqueado"
-            ? "border-slate-300 text-slate-400"
+            ? "border-slate-300 text-slate-500"
             : esVerde(indice)
               ? "border-[#14848D] text-[#14848D]"
               : "border-[#B5246E] text-[#B5246E]",
@@ -112,7 +112,7 @@ function Nodo({ modulo, indice }: { modulo: ModuloVista; indice: number }) {
       >
         {estado === "bloqueado" ? <Lock className="h-4 w-4" /> : <Icono className="h-5 w-5" />}
       </span>
-      <span className="text-[10px] font-bold text-slate-400">{modulo.codigo}</span>
+      <span className="text-[10px] font-bold text-slate-500">{modulo.codigo}</span>
     </div>
   );
 }
@@ -172,7 +172,7 @@ export function RutaAprendizaje({ modulos }: { modulos: ModuloVista[] }) {
         })}
 
         <div className="relative mt-4 flex justify-center">
-          <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-slate-300 bg-white text-slate-400">
+          <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-slate-300 bg-white text-slate-500">
             <Flag className="h-4 w-4" />
           </span>
         </div>

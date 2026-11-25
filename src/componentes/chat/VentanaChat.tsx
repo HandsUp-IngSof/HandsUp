@@ -182,13 +182,13 @@ export function VentanaChat({ chat, yoId, onVolver, onConversacionCreada, onActi
                       )}
                     >
                       <p className="whitespace-pre-wrap break-words">{m.texto}</p>
-                      <p className={cn("mt-0.5 text-right text-[10px]", mio ? "text-white/75" : "text-slate-400")}>
+                      <p className={cn("mt-0.5 text-right text-[10px]", mio ? "text-white/75" : "text-slate-500")}>
                         {hora(m.creado_en)}
                       </p>
                     </div>
                   </div>
                   {mio && m.id === ultimoMio?.id && m.leido_en && (
-                    <p className="pr-1 text-right text-[10px] font-semibold text-slate-400">Visto</p>
+                    <p className="pr-1 text-right text-[10px] font-semibold text-slate-500">Visto</p>
                   )}
                 </Fragment>
               );
@@ -221,7 +221,7 @@ export function VentanaChat({ chat, yoId, onVolver, onConversacionCreada, onActi
             onKeyDown={alPresionarTecla}
             rows={1}
             placeholder={`Escribe a ${primerNombre}...`}
-            className="max-h-32 min-h-[44px] flex-1 resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#14848D] [field-sizing:content]"
+            className="max-h-32 min-h-[44px] flex-1 resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-500 focus:border-[#14848D] [field-sizing:content]"
           />
           <button
             type="submit"
@@ -232,7 +232,7 @@ export function VentanaChat({ chat, yoId, onVolver, onConversacionCreada, onActi
             {enviando ? <Loader2 className="h-4 w-4 animate-spin" /> : <SendHorizontal className="h-4 w-4" />}
           </button>
         </div>
-        <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] text-slate-400">
+        <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] text-slate-500">
           <span className="flex flex-wrap items-center gap-x-2">
             {aviso}
             <span className="hidden sm:inline">Enter para enviar · Shift + Enter para un salto de línea</span>

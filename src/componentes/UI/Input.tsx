@@ -17,7 +17,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         "px-4 py-2 text-base font-['Fredoka',sans-serif] font-medium",
                         "outline-none transition-all duration-300 ease-out",
                         "text-slate-900 caret-[#14848D]",
-                        "placeholder:text-slate-400",
+                        "placeholder:text-slate-500",
                         "border-[#C4B5FD] hover:border-[#A78BFA]",
                         "focus:border-[#A78BFA] focus:bg-[#F2F9F9]",
                         "focus:shadow-[0_0_20px_rgba(167,139,250,0.55)]",

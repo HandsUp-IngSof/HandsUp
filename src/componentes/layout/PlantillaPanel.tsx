@@ -33,6 +33,13 @@ export function PlantillaPanel({
 
   return (
     <div className="flex min-h-screen bg-[#F4F7F7] font-['Fredoka',sans-serif]">
+      {/* Accesibilidad (SCRUM-28): con Tab, lo primero es saltar el menu e ir directo al contenido. */}
+      <a
+        href="#contenido"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-[#14848D] focus:px-4 focus:py-2.5 focus:text-sm focus:font-bold focus:text-white"
+      >
+        Saltar al contenido
+      </a>
       <BarraLateral
         etiqueta={etiqueta}
         enlaces={enlaces}
@@ -51,7 +58,9 @@ export function PlantillaPanel({
           opcionesMenu={opcionesMenu}
           onAbrirMenu={() => setMenuAbierto(true)}
         />
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
+        <main id="contenido" tabIndex={-1} className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 outline-none sm:px-6 lg:px-8">
+          {children}
+        </main>
       </div>
     </div>
   );

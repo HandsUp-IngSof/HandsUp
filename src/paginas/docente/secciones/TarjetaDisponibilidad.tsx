@@ -115,7 +115,7 @@ function Celda({ bloque, onAgregar, onEliminar }: CeldaProps) {
       disabled={!futuro}
       onClick={() => onAgregar(bloque.inicio)}
       title={futuro ? "Clic para añadir un horario aquí" : undefined}
-      className="group flex h-10 items-center justify-center rounded-lg bg-slate-100 px-1 text-[11px] font-semibold text-slate-400 transition-colors enabled:hover:bg-[#E3F3F0] enabled:hover:text-[#14848D] disabled:cursor-default"
+      className="group flex h-10 items-center justify-center rounded-lg bg-slate-100 px-1 text-[11px] font-semibold text-slate-500 transition-colors enabled:hover:bg-[#E3F3F0] enabled:hover:text-[#14848D] disabled:cursor-default"
     >
       <span className={cn(futuro && "group-hover:hidden")}>—</span>
       {futuro && <Plus className="hidden h-4 w-4 group-hover:inline" />}
@@ -317,7 +317,7 @@ export function TarjetaDisponibilidad() {
           {!cargando && horarios.length === 0 && (
             <p className="mt-3 text-center text-xs text-slate-500">No tienes horarios registrados esta semana.</p>
           )}
-          <p className="mt-3 text-[11px] text-slate-400">
+          <p className="mt-3 text-[11px] text-slate-500">
             Haz clic en un espacio vacío para añadir un horario, o en uno disponible para eliminarlo.
           </p>
         </div>

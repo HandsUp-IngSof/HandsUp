@@ -46,7 +46,7 @@ function Campo({ id, etiqueta, error, ayuda, children }: CampoProps) {
 
 const claseCampo = (conError?: boolean) =>
   cn(
-    "w-full rounded-xl border bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 disabled:bg-slate-50 disabled:text-slate-500",
+    "w-full rounded-xl border bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-500 disabled:bg-slate-50 disabled:text-slate-500",
     conError ? "border-red-300 focus:border-red-500" : "border-slate-200 focus:border-[#14848D]",
   );
 
@@ -304,7 +304,7 @@ export function FormularioPerfil({
             aria-describedby={errores.bio ? "perfil-bio-error" : undefined}
             className={cn(claseCampo(!!errores.bio), "resize-y py-2.5")}
           />
-          <p className={cn("text-right text-xs", largoBio > BIO_MAXIMO ? "font-bold text-red-600" : "text-slate-400")}>
+          <p className={cn("text-right text-xs", largoBio > BIO_MAXIMO ? "font-bold text-red-600" : "text-slate-500")}>
             {largoBio}/{BIO_MAXIMO}
           </p>
         </Campo>
