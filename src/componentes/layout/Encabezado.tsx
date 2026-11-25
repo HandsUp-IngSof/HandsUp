@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
-import { Bell, LogOut, Menu, MoreHorizontal, UserRound } from "lucide-react";
+import { LogOut, Menu, MoreHorizontal, UserRound } from "lucide-react";
 
+import { CampanaNotificaciones } from "@/componentes/notificaciones/CampanaNotificaciones";
 import { Avatar } from "@/componentes/UI/Avatar";
 import { cerrarSesion } from "@/lib/auth";
 
@@ -71,14 +72,7 @@ export function Encabezado({
         <p className="truncate text-xs text-slate-500">{subtitulo}</p>
       </div>
 
-      <button
-        type="button"
-        className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
-        aria-label="Notificaciones"
-        title="Próximamente"
-      >
-        <Bell className="h-5 w-5" />
-      </button>
+      <CampanaNotificaciones />
 
       <div className="flex items-center gap-3">
         <Avatar nombre={nombre} url={avatarUrl} />

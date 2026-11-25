@@ -2,6 +2,7 @@ import { Suspense, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { BookOpen, CalendarDays, MessageCircle, MessagesSquare, Route, TrendingUp } from "lucide-react";
 
+import { useMensajesSinLeer } from "@/componentes/chat/useMensajesSinLeer";
 import { usePerfil } from "@/componentes/RutaProtegida";
 import { PlantillaPanel } from "@/componentes/layout/PlantillaPanel";
 import type { EnlaceMenu } from "@/componentes/layout/BarraLateral";
@@ -13,7 +14,7 @@ const enlacesEstudiante: EnlaceMenu[] = [
   { texto: "Mi aprendizaje", icono: Route, ruta: "/estudiante", exacto: true, incluye: "/estudiante/modulo" },
   { texto: "Diccionario LSC", icono: BookOpen, ruta: "/estudiante/diccionario" },
   { texto: "Mis clases", icono: CalendarDays, ruta: "/estudiante/clases" },
-  { texto: "Mensajes", icono: MessagesSquare, ruta: "/estudiante/mensajes", insignia: 2 },
+  { texto: "Mensajes", icono: MessagesSquare, ruta: "/estudiante/mensajes" },
 ];
 
 // "Tu espacio personal" del menu "···".
@@ -27,6 +28,8 @@ const opcionesEstudiante: OpcionMenu[] = [
 export function PanelEstudiante() {
   const perfil = usePerfil();
   const { pathname } = useLocation();
+  const sinLeer = useMensajesSinLeer(); // numero real de mensajes sin leer (SCRUM-44)
+  const enlaces = enlacesEstudiante.map((e) => (e.ruta === "/estudiante/mensajes" ? { ...e, insignia: sinLeer } : e));
 
   // Al cambiar de pagina, vuelve al inicio de la pantalla.
   useEffect(() => {
@@ -36,7 +39,7 @@ export function PanelEstudiante() {
   return (
     <PlantillaPanel
       etiqueta="Espacio estudiante"
-      enlaces={enlacesEstudiante}
+      enlaces={enlaces}
       titulo="Mi aprendizaje"
       subtitulo="Lengua de Señas Colombiana · LSC"
       nombre={`${perfil.nombre} ${perfil.apellido}`.trim()}

@@ -1,5 +1,6 @@
-import { BookOpen, MessagesSquare } from "lucide-react";
+import { BookOpen } from "lucide-react";
 
+import { PaginaMensajes } from "@/componentes/chat/PaginaMensajes";
 import { PaginaPronto } from "@/componentes/layout/PaginaPronto";
 
 // Paginas del menu del estudiante que todavia no tienen contenido.
@@ -19,12 +20,9 @@ export function DiccionarioEstudiante() {
 
 export function MensajesEstudiante() {
   return (
-    <PaginaPronto
-      titulo="Mensajes"
+    <PaginaMensajes
       descripcion="Conversa con tus docentes y resuelve tus dudas."
-      icono={MessagesSquare}
-      mensaje="Muy pronto podrás chatear aquí"
-      detalle="Estamos construyendo la mensajería para que hables con tus docentes sin salir de handsUp."
+      sinContactos="Aún no tienes docentes. Cuando agendes una clase, podrás escribirle a tu docente aquí."
     />
   );
 }
