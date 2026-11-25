@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { AlertCircle, ArrowRight, CheckCircle2, ExternalLink, Loader2, Trophy } from "lucide-react";
+import { AlertCircle, ArrowRight, CheckCircle2, ExternalLink, ListChecks, Loader2, Trophy } from "lucide-react";
 
 import { Ventana } from "@/componentes/UI/Ventana";
+import { obtenerEjerciciosEstudiante, type EjercicioEstudiante } from "@/lib/ejercicios";
 import { iconoDeInsignia } from "@/lib/iconos";
 import { enlaceIncrustable } from "@/lib/video";
 import { useDatosEstudiante } from "@/paginas/estudiante/DatosEstudiante";
 import type { Insignia, LeccionVista } from "@/paginas/estudiante/modelo";
+import { EjerciciosLeccion } from "@/paginas/estudiante/secciones/EjerciciosLeccion";
 
 interface VentanaLeccionProps {
   leccion: LeccionVista | null; // null = ventana cerrada
@@ -22,13 +24,29 @@ export function VentanaLeccion({ leccion, siguiente, onCerrar, onIrASiguiente }:
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [nuevas, setNuevas] = useState<Insignia[]>([]);
+  // Ejercicios de la leccion (SCRUM-38). null = cargando.
+  const [ejercicios, setEjercicios] = useState<EjercicioEstudiante[] | null>(null);
+  const [practicando, setPracticando] = useState(false);
+  // Acaba de aprobar: el resultado sigue visible aunque la leccion ya figure como completada.
+  const [recienAprobada, setRecienAprobada] = useState(false);
 
-  // Cada vez que se abre otra leccion, se limpia el estado.
+  // Cada vez que se abre otra leccion, se limpia el estado y se cargan sus ejercicios.
   const idLeccion = leccion?.id;
   useEffect(() => {
     setGuardando(false);
     setError(null);
     setNuevas([]);
+    setPracticando(false);
+    setRecienAprobada(false);
+    setEjercicios(null);
+    if (!idLeccion) return;
+    let activo = true;
+    obtenerEjerciciosEstudiante(idLeccion)
+      .then((lista) => activo && setEjercicios(lista))
+      .catch(() => activo && setEjercicios([]));
+    return () => {
+      activo = false;
+    };
   }, [idLeccion]);
 
   const alCompletar = async () => {
@@ -48,6 +66,7 @@ export function VentanaLeccion({ leccion, siguiente, onCerrar, onIrASiguiente }:
   const incrustado = video ? enlaceIncrustable(video) : null;
   const completada = leccion?.estado === "completada";
   const puedeCompletar = leccion?.estado === "siguiente";
+  const tieneEjercicios = (ejercicios?.length ?? 0) > 0;
 
   return (
     <Ventana titulo={leccion ? `Lección ${leccion.numero}` : "Lección"} abierta={leccion !== null} onCerrar={onCerrar} ancho="2xl">
@@ -90,6 +109,20 @@ export function VentanaLeccion({ leccion, siguiente, onCerrar, onIrASiguiente }:
             !video && <p className="text-sm text-slate-500">Esta lección todavía no tiene contenido.</p>
           )}
 
+          {/* Ejercicios con calificacion automatica (SCRUM-38) */}
+          {ejercicios && tieneEjercicios && (puedeCompletar || practicando || recienAprobada) && (
+            <EjerciciosLeccion
+              key={`${leccion.id}-${practicando}`}
+              leccionId={leccion.id}
+              ejercicios={ejercicios}
+              modo={puedeCompletar || recienAprobada ? "evaluar" : "practicar"}
+              onAprobado={async () => {
+                setRecienAprobada(true);
+                await alCompletar();
+              }}
+            />
+          )}
+
           {error && (
             <p role="alert" className="flex items-start gap-2 rounded-xl bg-red-50 p-3 text-sm text-red-700">
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
@@ -123,8 +156,18 @@ export function VentanaLeccion({ leccion, siguiente, onCerrar, onIrASiguiente }:
             {completada && (
               <span className="mr-auto flex items-center gap-1.5 text-sm font-semibold text-[#14848D]">
                 <CheckCircle2 className="h-4 w-4" />
-                Lección completada
+                {tieneEjercicios ? "Lección completada · ejercicios aprobados" : "Lección completada"}
               </span>
+            )}
+            {completada && tieneEjercicios && !practicando && !recienAprobada && (
+              <button
+                type="button"
+                onClick={() => setPracticando(true)}
+                className="flex items-center gap-2 rounded-xl border border-[#B5246E] px-4 py-2.5 text-sm font-bold text-[#B5246E] hover:bg-[#FCE4EF]"
+              >
+                <ListChecks className="h-4 w-4" />
+                Practicar ejercicios
+              </button>
             )}
             <button
               type="button"
@@ -143,7 +186,8 @@ export function VentanaLeccion({ leccion, siguiente, onCerrar, onIrASiguiente }:
                 <ArrowRight className="h-4 w-4" />
               </button>
             )}
-            {puedeCompletar && (
+            {/* Sin ejercicios se completa con un clic; con ejercicios, al aprobarlos. */}
+            {puedeCompletar && ejercicios !== null && !tieneEjercicios && (
               <button
                 type="button"
                 onClick={() => void alCompletar()}
