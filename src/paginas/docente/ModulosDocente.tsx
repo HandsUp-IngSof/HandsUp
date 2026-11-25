@@ -5,6 +5,7 @@ import {
   ChevronUp,
   Eye,
   EyeOff,
+  ListChecks,
   Loader2,
   Pencil,
   Plus,
@@ -16,6 +17,7 @@ import {
 import { usePerfil } from "@/componentes/RutaProtegida";
 import { EncabezadoSeccion } from "@/componentes/layout/EncabezadoSeccion";
 import { Ventana } from "@/componentes/UI/Ventana";
+import { contarEjercicios } from "@/lib/ejercicios";
 import { iconoDeModulo } from "@/lib/iconos";
 import { cn } from "@/lib/utils";
 import {
@@ -34,6 +36,7 @@ import {
   type LeccionDocente,
   type ModuloDocente,
 } from "@/paginas/docente/consultasModulos";
+import { VentanaEjercicios } from "@/paginas/docente/secciones/VentanaEjercicios";
 import { VentanaLeccionDocente, VentanaModulo } from "@/paginas/docente/secciones/VentanasModulos";
 
 // Que ventana de formulario esta abierta.
@@ -106,21 +109,33 @@ export function ModulosDocente() {
   const [edicionLeccion, setEdicionLeccion] = useState<EdicionLeccion>(null);
   const [eliminacion, setEliminacion] = useState<Eliminacion>(null);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
+  // Ejercicios por leccion (SCRUM-38): cuantos tiene cada una y cual se esta editando.
+  const [ejerciciosPorLeccion, setEjerciciosPorLeccion] = useState<Map<string, number>>(new Map());
+  const [ejerciciosDe, setEjerciciosDe] = useState<{ id: string; titulo: string } | null>(null);
+
+  const recargarEjercicios = useCallback(async (lista: ModuloDocente[]) => {
+    setEjerciciosPorLeccion(await contarEjercicios(lista.flatMap((m) => m.lecciones.map((l) => l.id))));
+  }, []);
 
   const recargar = useCallback(async () => {
     try {
-      setModulos(await obtenerModulosDocente(perfil.id));
+      const lista = await obtenerModulosDocente(perfil.id);
+      setModulos(lista);
+      void recargarEjercicios(lista);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudieron cargar tus módulos.");
     } finally {
       setCargando(false);
     }
-  }, [perfil.id]);
+  }, [perfil.id, recargarEjercicios]);
 
   useEffect(() => {
     void recargar();
   }, [recargar]);
+
+  const cerrarEjercicios = useCallback(() => setEjerciciosDe(null), []);
+  const cambiaronEjercicios = useCallback(() => void recargarEjercicios(modulos), [recargarEjercicios, modulos]);
 
   // Ejecuta un cambio y recarga la lista. Los errores se muestran arriba.
   const ejecutar = async (accion: () => Promise<void>) => {
@@ -350,6 +365,13 @@ export function ModulosDocente() {
                                 <span className="truncate">{leccion.titulo}</span>
                                 <Insignia publicado={leccion.publicada} />
                                 {leccion.videoUrl && <Video className="h-3.5 w-3.5 text-[#14848D]" aria-label="Tiene video" />}
+                                {(ejerciciosPorLeccion.get(leccion.id) ?? 0) > 0 && (
+                                  <span className="flex items-center gap-1 rounded-full bg-[#FCE4EF] px-2 py-0.5 text-[11px] font-bold text-[#B5246E]">
+                                    <ListChecks className="h-3 w-3" />
+                                    {ejerciciosPorLeccion.get(leccion.id)}{" "}
+                                    {ejerciciosPorLeccion.get(leccion.id) === 1 ? "ejercicio" : "ejercicios"}
+                                  </span>
+                                )}
                               </p>
                               {leccion.descripcion && <p className="truncate text-xs text-slate-500">{leccion.descripcion}</p>}
                             </div>
@@ -374,6 +396,12 @@ export function ModulosDocente() {
                                 onClick={() => void ejecutar(() => publicarLeccion(leccion.id, !leccion.publicada))}
                               >
                                 {leccion.publicada ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </BotonIcono>
+                              <BotonIcono
+                                titulo="Ejercicios de la lección"
+                                onClick={() => setEjerciciosDe({ id: leccion.id, titulo: leccion.titulo })}
+                              >
+                                <ListChecks className="h-4 w-4" />
                               </BotonIcono>
                               <BotonIcono titulo="Editar lección" onClick={() => setEdicionLeccion({ modulo, leccion })}>
                                 <Pencil className="h-4 w-4" />
@@ -420,6 +448,8 @@ export function ModulosDocente() {
         onCerrar={cerrarLeccion}
         onGuardar={guardarLeccion}
       />
+
+      <VentanaEjercicios leccion={ejerciciosDe} onCerrar={cerrarEjercicios} onCambio={cambiaronEjercicios} />
 
       <Ventana
         titulo={eliminacion?.tipo === "modulo" ? "Eliminar módulo" : "Eliminar lección"}
