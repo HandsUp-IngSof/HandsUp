@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { AlertCircle, Check, Copy, Loader2, Mail, MessageCircle, Phone, ShieldCheck } from "lucide-react";
+import { Link } from "react-router-dom";
+import { AlertCircle, Check, Copy, Loader2, Mail, MessageCircle, MessagesSquare, Phone, ShieldCheck } from "lucide-react";
 
 import { usePerfil } from "@/componentes/RutaProtegida";
 import { Avatar } from "@/componentes/UI/Avatar";
@@ -124,6 +125,16 @@ export function VentanaContactoEstudiante({ estudiante, onCerrar }: VentanaConta
           </dl>
 
           <div className="grid gap-2">
+            {/* Chat dentro de handsUp (SCRUM-44) */}
+            {estudiante && (
+              <Link
+                to={`/docente/mensajes?con=${estudiante.id}`}
+                className="flex items-center justify-center gap-2 rounded-xl bg-[#B5246E] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#9A1F5E]"
+              >
+                <MessagesSquare className="h-4 w-4" />
+                Enviar mensaje en handsUp
+              </Link>
+            )}
             {contacto.telefono ? (
               <a
                 href={enlaceWhatsApp(contacto.telefono, saludo)}
