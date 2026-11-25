@@ -233,7 +233,7 @@ export function Registro() {
                         Inicia sesión
                     </Link>
                 </p>
-                <p className="mt-5 text-xs text-[#7C9496]">
+                <p className="mt-5 text-xs text-slate-500">
                     © 2026 handsUp · Aprender nos conecta.
                 </p>
             </div>

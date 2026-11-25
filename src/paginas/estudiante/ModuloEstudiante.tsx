@@ -28,18 +28,18 @@ function FilaLeccion({ leccion, onAbrir }: FilaLeccionProps) {
           "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold",
           estado === "completada" && "bg-[#14848D] text-white",
           estado === "siguiente" && "bg-white text-[#14848D] ring-2 ring-[#14848D]",
-          bloqueada && "bg-slate-100 text-slate-400",
+          bloqueada && "bg-slate-100 text-slate-500",
         )}
       >
         {estado === "completada" ? <Check className="h-4 w-4" /> : bloqueada ? <Lock className="h-3.5 w-3.5" /> : numero}
       </span>
 
       <div className="min-w-0 flex-1">
-        <p className={cn("flex items-center gap-1.5 text-xs", bloqueada ? "text-slate-400" : "text-slate-500")}>
+        <p className={cn("flex items-center gap-1.5 text-xs", bloqueada ? "text-slate-500" : "text-slate-500")}>
           Lección {numero}
           {leccion.videoUrl && <Video className="h-3 w-3" aria-label="Incluye video" />}
         </p>
-        <p className={cn("truncate font-semibold", bloqueada ? "text-slate-400" : "text-slate-800")}>{titulo}</p>
+        <p className={cn("truncate font-semibold", bloqueada ? "text-slate-500" : "text-slate-800")}>{titulo}</p>
       </div>
 
       {estado === "completada" && (
@@ -62,7 +62,7 @@ function FilaLeccion({ leccion, onAbrir }: FilaLeccionProps) {
           Empezar
         </button>
       )}
-      {bloqueada && <span className="shrink-0 text-[11px] text-slate-400">Completa la anterior</span>}
+      {bloqueada && <span className="shrink-0 text-[11px] text-slate-500">Completa la anterior</span>}
     </li>
   );
 }
@@ -113,7 +113,7 @@ function ContenidoModulo({ modulo }: { modulo: ModuloVista }) {
           <span
             className={cn(
               "flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl",
-              bloqueado ? "bg-slate-100 text-slate-400" : enCurso ? "bg-[#FCE4EF] text-[#B5246E]" : "bg-[#E7F3F3] text-[#14848D]",
+              bloqueado ? "bg-slate-100 text-slate-500" : enCurso ? "bg-[#FCE4EF] text-[#B5246E]" : "bg-[#E7F3F3] text-[#14848D]",
             )}
           >
             <Icono className="h-7 w-7" />

@@ -34,14 +34,14 @@ export function EstudiantesDocente() {
   const controles = (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="relative sm:w-72">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
         <input
           type="search"
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           placeholder="Buscar estudiante"
           aria-label="Buscar estudiante por nombre"
-          className="h-10 w-full rounded-xl border border-slate-200 pl-9 pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#14848D]"
+          className="h-10 w-full rounded-xl border border-slate-200 pl-9 pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-500 focus:border-[#14848D]"
         />
       </div>
       <div className="flex flex-wrap gap-2">

@@ -45,7 +45,7 @@ function TarjetaInsignia({ insignia, progresoTexto }: { insignia: Insignia; prog
       <div className="min-w-0">
         <p className={cn("text-sm font-bold", lograda ? "text-slate-800" : "text-slate-500")}>{insignia.nombre}</p>
         <p className="text-xs text-slate-500">{insignia.descripcion}</p>
-        <p className={cn("mt-1 text-[11px] font-semibold", lograda ? "text-[#B5246E]" : "text-slate-400")}>
+        <p className={cn("mt-1 text-[11px] font-semibold", lograda ? "text-[#B5246E]" : "text-slate-500")}>
           {lograda ? `Obtenida el ${formatoFecha.format(insignia.obtenidaEn!)}` : progresoTexto}
         </p>
       </div>

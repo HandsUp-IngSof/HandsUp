@@ -307,7 +307,7 @@ export function ModulosDocente() {
                         {modulo.duracionMin ? ` · ${modulo.duracionMin} min` : ""}
                       </span>
                     </span>
-                    {abierto ? <ChevronUp className="h-4 w-4 text-slate-400" /> : <ChevronDown className="h-4 w-4 text-slate-400" />}
+                    {abierto ? <ChevronUp className="h-4 w-4 text-slate-500" /> : <ChevronDown className="h-4 w-4 text-slate-500" />}
                   </button>
 
                   <div className="flex items-center">

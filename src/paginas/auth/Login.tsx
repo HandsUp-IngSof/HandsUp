@@ -170,7 +170,7 @@ export function Login() {
                   placeholder="tu.nombre@correo.com"
                   className="pr-10"
                 />
-                <Mail className="w-5 h-5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Mail className="w-5 h-5 text-slate-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
             </div>
 
@@ -189,7 +189,7 @@ export function Login() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -252,7 +252,7 @@ export function Login() {
           </div>
         </div>
 
-        <div className="text-center text-[10px] text-slate-400 space-y-1">
+        <div className="text-center text-[10px] text-slate-500 space-y-1">
           <p>Al ingresar aceptas los Términos de uso y la Política de privacidad.</p>
           <p>© 2026 handsUp - Aprender nos conecta.</p>
         </div>

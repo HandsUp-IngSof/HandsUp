@@ -106,7 +106,7 @@ export function SeccionEnlaceClase() {
             placeholder={cargando ? "Cargando tu enlace..." : "meet.google.com/tu-clase-lsc"}
             aria-invalid={error ? true : undefined}
             className={cn(
-              "h-11 w-full rounded-xl border pl-9 pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 disabled:bg-slate-50",
+              "h-11 w-full rounded-xl border pl-9 pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-500 disabled:bg-slate-50",
               error ? "border-red-300 focus:border-red-500" : "border-slate-200 focus:border-[#14848D]",
             )}
           />

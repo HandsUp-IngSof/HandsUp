@@ -111,13 +111,13 @@ export function PaginaMensajes({
                             <span className={cn("truncate text-sm text-slate-800", c.sinLeer > 0 ? "font-bold" : "font-semibold")}>
                               {nombre}
                             </span>
-                            {c.ultimoEn && <span className="shrink-0 text-[11px] text-slate-400">{fechaCorta(c.ultimoEn)}</span>}
+                            {c.ultimoEn && <span className="shrink-0 text-[11px] text-slate-500">{fechaCorta(c.ultimoEn)}</span>}
                           </span>
                           <span className="mt-0.5 flex items-center justify-between gap-2">
                             <span
                               className={cn(
                                 "truncate text-xs",
-                                c.sinLeer > 0 ? "font-semibold text-slate-700" : c.ultimoTexto ? "text-slate-500" : "italic text-slate-400",
+                                c.sinLeer > 0 ? "font-semibold text-slate-700" : c.ultimoTexto ? "text-slate-500" : "italic text-slate-500",
                               )}
                             >
                               {vista}

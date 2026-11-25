@@ -27,7 +27,7 @@ export function BotonCopiar({ texto, etiqueta }: { texto: string; etiqueta: stri
       onClick={copiar}
       aria-label={`Copiar ${etiqueta}`}
       title={copiado ? "Copiado" : `Copiar ${etiqueta}`}
-      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-[#14848D]"
+      className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-[#14848D]"
     >
       {copiado ? <Check className="h-4 w-4 text-[#14848D]" /> : <Copy className="h-4 w-4" />}
     </button>
