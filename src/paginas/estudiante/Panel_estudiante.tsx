@@ -9,7 +9,7 @@ import type { OpcionMenu } from "@/componentes/layout/Encabezado";
 import { Cargando } from "@/componentes/UI/Cargando";
 
 const enlacesEstudiante: EnlaceMenu[] = [
-  { texto: "Mi aprendizaje", icono: Route, ruta: "/estudiante", exacto: true },
+  { texto: "Mi aprendizaje", icono: Route, ruta: "/estudiante", exacto: true, incluye: "/estudiante/modulo" },
   { texto: "Diccionario LSC", icono: BookOpen, ruta: "/estudiante/diccionario" },
   { texto: "Mis clases", icono: CalendarDays, ruta: "/estudiante/clases" },
   { texto: "Mensajes", icono: MessagesSquare, ruta: "/estudiante/mensajes", insignia: 2 },

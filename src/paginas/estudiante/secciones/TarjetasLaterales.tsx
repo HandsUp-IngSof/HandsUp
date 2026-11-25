@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { ChartLine, Flame, Sparkles, Video } from "lucide-react";
 
 import { Avatar } from "@/componentes/UI/Avatar";
@@ -62,13 +63,12 @@ export function TarjetaClaseBienvenida({ clase }: { clase: ClaseBienvenida }) {
       <p className="mt-3 text-xs text-slate-500">
         Conoce a {primerNombre} y activa tu primer módulo de conversación en vivo.
       </p>
-      <button
-        type="button"
-        title="Próximamente"
-        className="mt-4 w-full rounded-xl border border-slate-200 py-2.5 text-sm font-bold text-[#14848D] hover:bg-slate-50"
+      <Link
+        to="/estudiante/clases"
+        className="mt-4 block w-full rounded-xl border border-slate-200 py-2.5 text-center text-sm font-bold text-[#14848D] hover:bg-slate-50"
       >
         Ver detalle de la clase
-      </button>
+      </Link>
     </section>
   );
 }

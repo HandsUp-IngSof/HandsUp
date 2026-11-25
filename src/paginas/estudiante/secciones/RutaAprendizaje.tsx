@@ -1,7 +1,8 @@
+import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, Flag, Info, Lightbulb, Lock, Star } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { Modulo } from "@/paginas/estudiante/datosEjemplo";
+import { rutaModulo, type Modulo } from "@/paginas/estudiante/datosEjemplo";
 
 // Los modulos disponibles alternan verde y rosado, como en la maqueta.
 const esVerde = (indice: number) => indice % 2 === 0;
@@ -45,23 +46,18 @@ function TarjetaModulo({ modulo, indice }: { modulo: Modulo; indice: number }) {
         {modulo.detalle}
       </p>
 
-      {bloqueado ? (
-        <span className="mt-4 block rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-500">
-          Pendiente de bienvenida
-        </span>
-      ) : (
-        <button
-          type="button"
-          title="Próximamente"
-          className={cn(
-            "mt-4 flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold",
-            enCurso ? "bg-[#14848D] text-white hover:bg-[#0F6E75]" : "bg-[#E3F3F0] text-[#14848D] hover:bg-[#D3ECE8]",
-          )}
-        >
-          {enCurso ? "Continuar módulo" : "Explorar módulo"}
-          <ArrowRight className="h-4 w-4" />
-        </button>
-      )}
+      <Link
+        to={rutaModulo(modulo.codigo)}
+        className={cn(
+          "mt-4 flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm",
+          bloqueado && "bg-slate-100 font-semibold text-slate-500 hover:bg-slate-200",
+          enCurso && "bg-[#14848D] font-bold text-white hover:bg-[#0F6E75]",
+          estado === "disponible" && "bg-[#E3F3F0] font-bold text-[#14848D] hover:bg-[#D3ECE8]",
+        )}
+      >
+        {bloqueado ? "Pendiente de bienvenida" : enCurso ? "Continuar módulo" : "Explorar módulo"}
+        {bloqueado ? <Lock className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+      </Link>
     </article>
   );
 }
@@ -129,15 +125,21 @@ export function RutaAprendizaje({ modulos }: { modulos: Modulo[] }) {
         {modulos.map((modulo, indice) => {
           const izquierda = indice % 2 === 0;
           return (
+            // Cada fila se monta un poco sobre la anterior (efecto zigzag). La fila no recibe clics
+            // (pointer-events-none) para que su espacio vacio no tape el boton de la tarjeta de arriba;
+            // solo la tarjeta los recibe (pointer-events-auto).
             <div
               key={modulo.codigo}
-              className={cn("relative grid grid-cols-[minmax(0,1fr)_72px_minmax(0,1fr)] items-start", indice === 0 ? "mt-3" : "-mt-14")}
+              className={cn(
+                "pointer-events-none relative grid grid-cols-[minmax(0,1fr)_72px_minmax(0,1fr)] items-start",
+                indice === 0 ? "mt-3" : "-mt-14",
+              )}
             >
-              <div>{izquierda && <TarjetaModulo modulo={modulo} indice={indice} />}</div>
+              <div className="pointer-events-auto">{izquierda && <TarjetaModulo modulo={modulo} indice={indice} />}</div>
               <div className="flex justify-center pt-10">
                 <Nodo modulo={modulo} indice={indice} />
               </div>
-              <div>{!izquierda && <TarjetaModulo modulo={modulo} indice={indice} />}</div>
+              <div className="pointer-events-auto">{!izquierda && <TarjetaModulo modulo={modulo} indice={indice} />}</div>
             </div>
           );
         })}

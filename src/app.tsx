@@ -23,6 +23,9 @@ const ClasesEstudiante = lazy(() =>
 const MensajesEstudiante = lazy(() =>
     import("@/paginas/estudiante/PaginasEstudiante").then((m) => ({ default: m.MensajesEstudiante })),
 );
+const ModuloEstudiante = lazy(() =>
+    import("@/paginas/estudiante/ModuloEstudiante").then((m) => ({ default: m.ModuloEstudiante })),
+);
 const PerfilEstudiante = lazy(() =>
     import("@/paginas/estudiante/PerfilEstudiante").then((m) => ({ default: m.PerfilEstudiante })),
 );
@@ -67,6 +70,7 @@ export function App() {
                         }
                     >
                         <Route index element={<InicioEstudiante />} />
+                        <Route path="modulo/:codigo" element={<ModuloEstudiante />} />
                         <Route path="diccionario" element={<DiccionarioEstudiante />} />
                         <Route path="clases" element={<ClasesEstudiante />} />
                         <Route path="mensajes" element={<MensajesEstudiante />} />
