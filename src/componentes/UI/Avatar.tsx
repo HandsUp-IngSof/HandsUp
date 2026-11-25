@@ -26,7 +26,17 @@ export function Avatar({ nombre, url, tamano = "md", className }: AvatarProps) {
   const base = cn("shrink-0 rounded-full", TAMANOS[tamano], className);
 
   if (url && !fallo) {
-    return <img src={url} alt={`Foto de ${nombre}`} onError={() => setFallo(true)} className={cn(base, "object-cover")} />;
+    // loading="lazy": las fotos que no estan a la vista no se descargan todavia (SCRUM-29).
+    return (
+      <img
+        src={url}
+        alt={`Foto de ${nombre}`}
+        loading="lazy"
+        decoding="async"
+        onError={() => setFallo(true)}
+        className={cn(base, "object-cover")}
+      />
+    );
   }
 
   return (
