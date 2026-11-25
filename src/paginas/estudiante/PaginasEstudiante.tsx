@@ -1,8 +1,9 @@
-import { BookOpen, CalendarDays, MessagesSquare } from "lucide-react";
+import { BookOpen, CalendarDays } from "lucide-react";
 
+import { PaginaMensajes } from "@/componentes/chat/PaginaMensajes";
 import { PaginaPronto } from "@/componentes/layout/PaginaPronto";
 
-// Paginas del menu del estudiante que todavia no tienen contenido (SCRUM-58).
+// Paginas del menu del estudiante (SCRUM-58). Diccionario y Mis clases todavia no tienen contenido.
 
 export function DiccionarioEstudiante() {
   return (
@@ -29,14 +30,12 @@ export function ClasesEstudiante() {
   );
 }
 
+// Chat con sus docentes (SCRUM-44).
 export function MensajesEstudiante() {
   return (
-    <PaginaPronto
-      titulo="Mensajes"
+    <PaginaMensajes
       descripcion="Conversa con tus docentes y resuelve tus dudas."
-      icono={MessagesSquare}
-      mensaje="Muy pronto podrás chatear aquí"
-      detalle="Estamos construyendo la mensajería para que hables con tus docentes sin salir de handsUp."
+      sinContactos="Aún no tienes docentes. Cuando agendes una clase, podrás escribirle a tu docente aquí."
     />
   );
 }
