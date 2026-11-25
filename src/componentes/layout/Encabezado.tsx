@@ -1,9 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import type { LucideIcon } from "lucide-react";
 import { Bell, LogOut, Menu, MoreHorizontal, UserRound } from "lucide-react";
 
 import { Avatar } from "@/componentes/UI/Avatar";
 import { cerrarSesion } from "@/lib/auth";
+
+// Opcion extra del menu "···". Sin ruta se muestra como "Pronto" (aun no implementada).
+export interface OpcionMenu {
+  texto: string;
+  icono: LucideIcon;
+  ruta?: string;
+}
 
 interface EncabezadoProps {
   titulo: string;
@@ -12,6 +20,8 @@ interface EncabezadoProps {
   rolTexto: string;
   avatarUrl?: string | null;
   rutaPerfil?: string; // pagina "Mi perfil" (SCRUM-48)
+  // Seccion "Tu espacio personal" del menu "···" del estudiante (SCRUM-58).
+  opcionesMenu?: OpcionMenu[];
   onAbrirMenu: () => void;
 }
 
@@ -23,6 +33,7 @@ export function Encabezado({
   rolTexto,
   avatarUrl,
   rutaPerfil,
+  opcionesMenu,
   onAbrirMenu,
 }: EncabezadoProps) {
   const navigate = useNavigate();
@@ -89,7 +100,38 @@ export function Encabezado({
         </button>
 
         {menuAbierto && (
-          <div className="absolute right-0 mt-2 w-48 rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg">
+          <div className="absolute right-0 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg">
+            {opcionesMenu && opcionesMenu.length > 0 && (
+              <>
+                <p className="px-3 pb-1 pt-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Tu espacio personal
+                </p>
+                {opcionesMenu.map(({ texto, icono: Icono, ruta }) =>
+                  ruta ? (
+                    <Link
+                      key={texto}
+                      to={ruta}
+                      onClick={() => setMenuAbierto(false)}
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-[#E7F3F3]"
+                    >
+                      <Icono className="h-4 w-4 text-[#14848D]" />
+                      {texto}
+                    </Link>
+                  ) : (
+                    <span
+                      key={texto}
+                      title="Próximamente"
+                      className="flex w-full cursor-default items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-400"
+                    >
+                      <Icono className="h-4 w-4" />
+                      <span className="flex-1 whitespace-nowrap">{texto}</span>
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold">Pronto</span>
+                    </span>
+                  ),
+                )}
+                <div className="my-1 border-t border-slate-100" />
+              </>
+            )}
             {rutaPerfil && (
               <Link
                 to={rutaPerfil}

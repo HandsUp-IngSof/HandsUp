@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 import { HeartHandshake, HelpCircle, ArrowUpRight, X } from "lucide-react";
 
@@ -12,6 +12,8 @@ export interface EnlaceMenu {
   // true: solo se resalta en esa ruta exacta (no en sus subpaginas). Se usa en "Mi espacio".
   exacto?: boolean;
   insignia?: number;
+  // Otras rutas donde tambien se resalta (ej: las paginas de los modulos dentro de "Mi aprendizaje").
+  incluye?: string;
 }
 
 interface BarraLateralProps {
@@ -24,6 +26,8 @@ interface BarraLateralProps {
 // Menu lateral de los paneles. En escritorio siempre esta visible;
 // en celular se abre como un cajon con el boton de menu del encabezado.
 export function BarraLateral({ etiqueta, enlaces, abierta, onCerrar }: BarraLateralProps) {
+  const { pathname } = useLocation();
+
   return (
     <>
       {/* Fondo oscuro detras del menu en celular */}
@@ -65,7 +69,7 @@ export function BarraLateral({ etiqueta, enlaces, abierta, onCerrar }: BarraLate
         </p>
 
         <nav className="mt-2 flex flex-col gap-1">
-          {enlaces.map(({ texto, icono: Icono, ruta, exacto, insignia }) => (
+          {enlaces.map(({ texto, icono: Icono, ruta, exacto, insignia, incluye }) => (
             <NavLink
               key={texto}
               to={ruta}
@@ -74,7 +78,7 @@ export function BarraLateral({ etiqueta, enlaces, abierta, onCerrar }: BarraLate
               className={({ isActive }) =>
                 cn(
                   "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-                  isActive
+                  isActive || (incluye && pathname.startsWith(incluye))
                     ? "bg-[#E7F3F3] text-[#14848D]"
                     : "text-slate-600 hover:bg-slate-50 hover:text-slate-800",
                 )

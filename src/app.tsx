@@ -1,13 +1,30 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Cargando } from "@/componentes/UI/Cargando";
 
 // Carga diferida: cada pantalla se descarga solo cuando el usuario la abre,
 // asi la primera carga de la aplicacion es mas liviana.
 const Login = lazy(() => import("@/paginas/auth/Login").then((m) => ({ default: m.Login })));
 const Registro = lazy(() => import("@/paginas/auth/Registro").then((m) => ({ default: m.Registro })));
+
+// Panel estudiante (SCRUM-58): misma idea que el del docente.
 const PanelEstudiante = lazy(() =>
     import("@/paginas/estudiante/Panel_estudiante").then((m) => ({ default: m.PanelEstudiante })),
+);
+const InicioEstudiante = lazy(() =>
+    import("@/paginas/estudiante/InicioEstudiante").then((m) => ({ default: m.InicioEstudiante })),
+);
+const DiccionarioEstudiante = lazy(() =>
+    import("@/paginas/estudiante/PaginasEstudiante").then((m) => ({ default: m.DiccionarioEstudiante })),
+);
+const ClasesEstudiante = lazy(() =>
+    import("@/paginas/estudiante/PaginasEstudiante").then((m) => ({ default: m.ClasesEstudiante })),
+);
+const MensajesEstudiante = lazy(() =>
+    import("@/paginas/estudiante/PaginasEstudiante").then((m) => ({ default: m.MensajesEstudiante })),
+);
+const ModuloEstudiante = lazy(() =>
+    import("@/paginas/estudiante/ModuloEstudiante").then((m) => ({ default: m.ModuloEstudiante })),
 );
 const PerfilEstudiante = lazy(() =>
     import("@/paginas/estudiante/PerfilEstudiante").then((m) => ({ default: m.PerfilEstudiante })),
@@ -48,11 +65,15 @@ export function App() {
                         path="/estudiante"
                         element={
                             <RutaProtegida rol="estudiante">
-                                <Outlet />
+                                <PanelEstudiante />
                             </RutaProtegida>
                         }
                     >
-                        <Route index element={<PanelEstudiante />} />
+                        <Route index element={<InicioEstudiante />} />
+                        <Route path="modulo/:codigo" element={<ModuloEstudiante />} />
+                        <Route path="diccionario" element={<DiccionarioEstudiante />} />
+                        <Route path="clases" element={<ClasesEstudiante />} />
+                        <Route path="mensajes" element={<MensajesEstudiante />} />
                         <Route path="perfil" element={<PerfilEstudiante />} />
                         <Route path="*" element={<Navigate to="/estudiante" replace />} />
                     </Route>
