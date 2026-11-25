@@ -113,7 +113,7 @@ export function BarraLateral({ etiqueta, enlaces, abierta, onCerrar }: BarraLate
             <HelpCircle className="h-4 w-4" />
             ¿Necesitas ayuda?
           </button>
-          <p className="text-[11px] text-slate-400">Hecho para conectar · Colombia</p>
+          <p className="text-[11px] text-slate-500">Hecho para conectar · Colombia</p>
         </div>
       </aside>
     </>

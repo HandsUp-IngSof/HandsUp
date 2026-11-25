@@ -188,7 +188,7 @@ export function CampanaNotificaciones() {
                             {n.titulo}
                           </span>
                           {n.texto && <span className="mt-0.5 line-clamp-2 block text-xs text-slate-500">{n.texto}</span>}
-                          <span className="mt-1 block text-[11px] text-slate-400">{hace(n.creado_en)}</span>
+                          <span className="mt-1 block text-[11px] text-slate-500">{hace(n.creado_en)}</span>
                         </span>
                         {!n.leida && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#B5246E]" aria-label="Sin leer" />}
                       </button>
@@ -234,7 +234,7 @@ export function CampanaNotificaciones() {
           <button
             type="button"
             onClick={() => setEmergente(null)}
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100"
+            className="rounded-lg p-1 text-slate-500 hover:bg-slate-100"
             aria-label="Cerrar aviso"
           >
             <X className="h-4 w-4" />
