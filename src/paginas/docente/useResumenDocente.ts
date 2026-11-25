@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { usePerfil } from "@/componentes/RutaProtegida";
 import { obtenerResumenDocente, type ResumenDocente } from "@/paginas/docente/resumenDocente";
@@ -10,9 +10,11 @@ interface EstadoResumen {
 }
 
 // Carga el resumen del docente con sesion iniciada (estudiantes, proxima clase y contadores).
-export function useResumenDocente(): EstadoResumen {
+// recargar(): vuelve a consultar (por ejemplo, despues de confirmar una reserva, SCRUM-39).
+export function useResumenDocente(): EstadoResumen & { recargar: () => void } {
   const perfil = usePerfil();
   const [estado, setEstado] = useState<EstadoResumen>({ datos: null, cargando: true, error: null });
+  const [version, setVersion] = useState(0);
 
   useEffect(() => {
     let activo = true;
@@ -22,7 +24,9 @@ export function useResumenDocente(): EstadoResumen {
     return () => {
       activo = false;
     };
-  }, [perfil.id]);
+  }, [perfil.id, version]);
 
-  return estado;
+  const recargar = useCallback(() => setVersion((v) => v + 1), []);
+
+  return { ...estado, recargar };
 }
