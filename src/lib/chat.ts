@@ -8,6 +8,10 @@ import { supabase } from "@/lib/supabase";
 
 export const MENSAJE_MAXIMO = 1000;
 
+// Los mensajes se borran solos despues de estos dias (SCRUM-52, basedatos/SCRUM-52-vaciado-chats.sql).
+// Si se cambia, cambiar tambien el 30 de la tarea programada en Supabase.
+export const DIAS_RETENCION = 30;
+
 // Evento del navegador para avisar que se leyeron mensajes (actualiza el número del menú).
 export const EVENTO_LEIDOS = "handsup:mensajes-leidos";
 
