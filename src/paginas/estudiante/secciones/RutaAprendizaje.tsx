@@ -57,7 +57,15 @@ function TarjetaModulo({ modulo, indice }: { modulo: ModuloVista; indice: number
           (estado === "disponible" || completado) && "bg-[#E3F3F0] font-bold text-[#14848D] hover:bg-[#D3ECE8]",
         )}
       >
-        {bloqueado ? "Pendiente de bienvenida" : enCurso ? "Continuar módulo" : completado ? "Repasar módulo" : "Explorar módulo"}
+        {bloqueado
+          ? modulo.motivoBloqueo === "anterior"
+            ? "Completa el módulo anterior"
+            : "Pendiente de bienvenida"
+          : enCurso
+            ? "Continuar módulo"
+            : completado
+              ? "Repasar módulo"
+              : "Explorar módulo"}
         {bloqueado ? <Lock className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
       </Link>
     </article>

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { ArrowLeft, BookOpen, CalendarDays, Check, Lock, Play, RotateCcw, Trophy, Video } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, CalendarDays, Check, Lock, Play, RotateCcw, Trophy, Video } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { LeccionVista, ModuloVista } from "@/paginas/estudiante/modelo";
+import { rutaModulo, type LeccionVista, type ModuloVista } from "@/paginas/estudiante/modelo";
 import { ConDatos } from "@/paginas/estudiante/secciones/EstadoCarga";
 import { VentanaLeccion } from "@/paginas/estudiante/secciones/VentanaLeccion";
 
@@ -163,16 +163,35 @@ function ContenidoModulo({ modulo }: { modulo: ModuloVista }) {
       {bloqueado && (
         <section className="flex flex-col items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:flex-row sm:items-center">
           <Lock className="h-5 w-5 shrink-0 text-slate-500" />
-          <p className="flex-1 text-sm text-slate-600">
-            Este módulo se habilita después de tu <strong>clase de bienvenida</strong> en vivo con tu docente.
-          </p>
-          <Link
-            to="/estudiante/clases"
-            className="inline-flex items-center gap-2 rounded-xl bg-[#14848D] px-4 py-2 text-sm font-bold text-white hover:bg-[#0F6E75]"
-          >
-            <CalendarDays className="h-4 w-4" />
-            Ver mis clases
-          </Link>
+          {modulo.motivoBloqueo === "anterior" && modulo.bloqueadoPor ? (
+            <>
+              {/* Desbloqueo secuencial entre modulos (SCRUM-37) */}
+              <p className="flex-1 text-sm text-slate-600">
+                Este módulo se desbloquea cuando completes <strong>{modulo.bloqueadoPor.titulo}</strong>. Así aprendes
+                paso a paso.
+              </p>
+              <Link
+                to={rutaModulo(modulo.bloqueadoPor.id)}
+                className="inline-flex items-center gap-2 rounded-xl bg-[#14848D] px-4 py-2 text-sm font-bold text-white hover:bg-[#0F6E75]"
+              >
+                <ArrowRight className="h-4 w-4" />
+                Ir a ese módulo
+              </Link>
+            </>
+          ) : (
+            <>
+              <p className="flex-1 text-sm text-slate-600">
+                Este módulo se habilita después de tu <strong>clase de bienvenida</strong> en vivo con tu docente.
+              </p>
+              <Link
+                to="/estudiante/clases"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#14848D] px-4 py-2 text-sm font-bold text-white hover:bg-[#0F6E75]"
+              >
+                <CalendarDays className="h-4 w-4" />
+                Ver mis clases
+              </Link>
+            </>
+          )}
         </section>
       )}
 
