@@ -76,18 +76,30 @@ export async function obtenerResumenDocente(profesorId: string): Promise<Resumen
     return { estudiantes: [], clasesSemana, proximaClase: null };
   }
 
-  const [nombres, lecciones, progreso] = await Promise.all([
+  const [nombres, leccionesBD, modulosBD, progreso] = await Promise.all([
     nombresDe(idsEstudiantes),
-    supabase.from("lecciones").select("id, titulo, orden").eq("esta_habilitada", true).order("orden"),
+    supabase.from("lecciones").select("id, titulo, orden, modulo_id").eq("esta_habilitada", true).order("orden"),
+    supabase.from("modulos").select("id, orden").eq("esta_habilitado", true),
     supabase
       .from("progreso_lecciones")
       .select("estudiante_id, leccion_id")
       .in("estudiante_id", idsEstudiantes)
       .eq("completada", true),
   ]);
-  if (lecciones.error) throw new Error("No se pudieron cargar las lecciones.");
+  if (leccionesBD.error || modulosBD.error) throw new Error("No se pudieron cargar las lecciones.");
   if (progreso.error) throw new Error("No se pudo cargar el progreso de los estudiantes.");
 
+  // Igual que en el panel del estudiante (SCRUM-34): solo cuentan las lecciones publicadas
+  // que pertenecen a un modulo publicado, en el orden de los modulos y luego de las lecciones.
+  const ordenModulo = new Map<string, number>(modulosBD.data.map((m) => [m.id as string, (m.orden as number | null) ?? 0]));
+  const lecciones = {
+    data: leccionesBD.data
+      .filter((l) => l.modulo_id && ordenModulo.has(l.modulo_id))
+      .sort(
+        (a, b) =>
+          (ordenModulo.get(a.modulo_id) ?? 0) - (ordenModulo.get(b.modulo_id) ?? 0) || (a.orden ?? 0) - (b.orden ?? 0),
+      ),
+  };
   const totalLecciones = lecciones.data.length;
 
   const estudiantes: EstudianteResumen[] = idsEstudiantes
