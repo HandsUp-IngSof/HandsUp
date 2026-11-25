@@ -20,6 +20,27 @@ body {
   border-radius: 0.5rem;
 }
 
+/* ---------------------------------------------------------------------
+   Celular (SCRUM-30)
+   --------------------------------------------------------------------- */
+
+/* En iPhone, Safari hace zoom a toda la pagina al tocar un campo con letra menor a 16 px.
+   En pantallas pequeñas los campos usan 16 px para que eso no pase. */
+@media (max-width: 640px) {
+  input:not([type="radio"]):not([type="checkbox"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Que los textos largos (enlaces, correos) se partan en vez de salirse de la pantalla. */
+p,
+li,
+dd {
+  overflow-wrap: break-word;
+}
+
 /* 2.3.3 Movimiento: si la persona pidio menos animaciones en su sistema, se respetan. */
 @media (prefers-reduced-motion: reduce) {
   *,

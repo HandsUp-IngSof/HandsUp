@@ -60,7 +60,63 @@ export function TablaEstudiantes({
       ) : estudiantes.length === 0 ? (
         <p className="py-10 text-center text-sm text-slate-500">{mensajeVacio}</p>
       ) : (
-        <div className="mt-4 overflow-x-auto">
+        <>
+        {/* Celular (SCRUM-30): una tarjeta por estudiante, sin desplazarse hacia los lados. */}
+        <ul className="mt-4 space-y-3 md:hidden">
+          {estudiantes.map((e) => (
+            <li key={e.id} className="rounded-xl border border-slate-200 p-4">
+              <div className="flex items-center gap-3">
+                <span
+                  className={cn(
+                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold",
+                    e.requiereAtencion ? "bg-[#FCE4EF] text-[#B5246E]" : "bg-[#E7F3F3] text-[#14848D]",
+                  )}
+                >
+                  {iniciales(e.nombre)}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-bold text-slate-800">{e.nombre}</p>
+                  <p className="truncate text-xs text-slate-500">{e.modulo}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setContacto({ id: e.id, nombre: e.nombre })}
+                  aria-label={`Ver contacto de ${e.nombre}`}
+                  className="rounded-lg p-2.5 text-[#14848D] hover:bg-[#E7F3F3]"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                </button>
+              </div>
+              <div className="mt-3 flex items-center gap-2">
+                <div
+                  className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-200"
+                  role="progressbar"
+                  aria-valuenow={e.progreso}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={`Progreso de ${e.nombre}`}
+                >
+                  <div className="h-full rounded-full bg-[#14848D]" style={{ width: `${e.progreso}%` }} />
+                </div>
+                <span className="text-xs font-bold text-[#14848D]">{e.progreso}%</span>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <span className="text-slate-500">{e.proximaClase}</span>
+                <span
+                  className={cn(
+                    "rounded-full px-3 py-1 font-semibold",
+                    e.requiereAtencion ? "bg-[#FCE4EF] text-[#B5246E]" : "bg-[#E3F3F0] text-[#14848D]",
+                  )}
+                >
+                  {e.estado}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        {/* Tableta y computador: tabla */}
+        <div className="mt-4 hidden overflow-x-auto md:block">
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead>
               <tr className="border-b border-slate-200 text-xs text-slate-500">
@@ -126,6 +182,7 @@ export function TablaEstudiantes({
             </tbody>
           </table>
         </div>
+        </>
       )}
 
       <VentanaContactoEstudiante estudiante={contacto} onCerrar={cerrarContacto} />
