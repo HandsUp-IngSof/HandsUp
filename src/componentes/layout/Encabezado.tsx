@@ -100,7 +100,7 @@ export function Encabezado({
         </button>
 
         {menuAbierto && (
-          <div className="absolute right-0 mt-2 w-56 rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg">
+          <div className="absolute right-0 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg">
             {opcionesMenu && opcionesMenu.length > 0 && (
               <>
                 <p className="px-3 pb-1 pt-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -124,7 +124,7 @@ export function Encabezado({
                       className="flex w-full cursor-default items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-400"
                     >
                       <Icono className="h-4 w-4" />
-                      <span className="flex-1">{texto}</span>
+                      <span className="flex-1 whitespace-nowrap">{texto}</span>
                       <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold">Pronto</span>
                     </span>
                   ),

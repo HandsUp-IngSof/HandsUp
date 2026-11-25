@@ -14,7 +14,7 @@ function TarjetaModulo({ modulo, indice }: { modulo: Modulo; indice: number }) {
   return (
     <article
       className={cn(
-        "rounded-2xl bg-white p-5 shadow-sm",
+        "rounded-2xl bg-white p-4 shadow-sm sm:p-5",
         enCurso ? "border-2 border-[#B5246E]/70" : "border border-slate-200",
       )}
     >
@@ -131,7 +131,7 @@ export function RutaAprendizaje({ modulos }: { modulos: Modulo[] }) {
           return (
             <div
               key={modulo.codigo}
-              className={cn("relative grid grid-cols-[minmax(0,1fr)_88px_minmax(0,1fr)] items-start", indice === 0 ? "mt-3" : "-mt-14")}
+              className={cn("relative grid grid-cols-[minmax(0,1fr)_72px_minmax(0,1fr)] items-start", indice === 0 ? "mt-3" : "-mt-14")}
             >
               <div>{izquierda && <TarjetaModulo modulo={modulo} indice={indice} />}</div>
               <div className="flex justify-center pt-10">

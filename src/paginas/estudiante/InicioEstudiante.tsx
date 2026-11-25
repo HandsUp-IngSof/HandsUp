@@ -19,15 +19,18 @@ export function InicioEstudiante() {
     <div className="space-y-6">
       <SaludoEstudiante nombre={perfil.nombre} />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+      {/* Escritorio: contenido + columna derecha. Tableta: columna derecha abajo en 2 columnas. Celular: todo en una. */}
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_290px] 2xl:grid-cols-[minmax(0,1fr)_330px]">
         <div className="min-w-0 space-y-8">
           <TarjetaSiguientePaso paso={siguientePaso} />
           <RutaAprendizaje modulos={modulos} />
         </div>
-        <div className="grid content-start gap-6 md:grid-cols-2 xl:grid-cols-1">
+        <div className="grid content-start items-start gap-6 md:grid-cols-2 xl:grid-cols-1">
           <TarjetaProgreso progreso={progreso} />
           <TarjetaClaseBienvenida clase={claseBienvenida} />
-          <TarjetaConsejo consejo={consejoDelDia} />
+          <div className="md:col-span-2 xl:col-span-1">
+            <TarjetaConsejo consejo={consejoDelDia} />
+          </div>
         </div>
       </div>
     </div>
