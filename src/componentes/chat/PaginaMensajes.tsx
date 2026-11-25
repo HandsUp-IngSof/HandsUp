@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useSearchParams } from "react-router-dom";
-import { AlertCircle, Loader2, MessagesSquare } from "lucide-react";
+import { AlertCircle, Clock3, Loader2, MessagesSquare } from "lucide-react";
 
 import { fechaCorta } from "@/componentes/chat/formatoChat";
 import { VentanaChat } from "@/componentes/chat/VentanaChat";
 import { EncabezadoSeccion } from "@/componentes/layout/EncabezadoSeccion";
 import { usePerfil } from "@/componentes/RutaProtegida";
 import { Avatar } from "@/componentes/UI/Avatar";
-import { escucharMensajes, EVENTO_LEIDOS, obtenerChats, type Chat } from "@/lib/chat";
+import { DIAS_RETENCION, escucharMensajes, EVENTO_LEIDOS, obtenerChats, type Chat } from "@/lib/chat";
 import { cn } from "@/lib/utils";
 
 interface PaginaMensajesProps {
@@ -19,7 +19,17 @@ interface PaginaMensajesProps {
 // Pagina "Mensajes" de los dos paneles (SCRUM-44): lista de conversaciones a la izquierda
 // y el chat a la derecha. En celular se ve una cosa a la vez.
 // ?con=<id> abre directamente el chat con esa persona.
-export function PaginaMensajes({ descripcion, sinContactos, aviso }: PaginaMensajesProps) {
+export function PaginaMensajes({
+  descripcion,
+  sinContactos,
+  // Vaciado automatico (SCRUM-52): se avisa debajo de la caja de escribir.
+  aviso = (
+    <span className="flex items-center gap-1">
+      <Clock3 className="h-3 w-3" />
+      Los mensajes se borran solos después de {DIAS_RETENCION} días.
+    </span>
+  ),
+}: PaginaMensajesProps) {
   const perfil = usePerfil();
   const [parametros, setParametros] = useSearchParams();
   const [chats, setChats] = useState<Chat[]>([]);

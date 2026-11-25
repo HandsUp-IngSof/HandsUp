@@ -233,7 +233,10 @@ export function VentanaChat({ chat, yoId, onVolver, onConversacionCreada, onActi
           </button>
         </div>
         <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] text-slate-400">
-          <span>{aviso ?? "Enter para enviar · Shift + Enter para un salto de línea"}</span>
+          <span className="flex flex-wrap items-center gap-x-2">
+            {aviso}
+            <span className="hidden sm:inline">Enter para enviar · Shift + Enter para un salto de línea</span>
+          </span>
           {largo > MENSAJE_MAXIMO - 100 && (
             <span className={cn(largo > MENSAJE_MAXIMO && "font-bold text-red-600")}>
               {largo}/{MENSAJE_MAXIMO}
