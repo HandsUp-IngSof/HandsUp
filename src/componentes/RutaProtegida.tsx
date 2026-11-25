@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 
 import { Cargando } from "@/componentes/UI/Cargando";
 import { supabase } from "@/lib/supabase";
-import { guardarPerfilEnMemoria, obtenerPerfil, type Perfil, type RolBD } from "@/lib/auth";
+import { guardarPerfilEnMemoria, obtenerPerfil, olvidarPerfil, type Perfil, type RolBD } from "@/lib/auth";
 
 const PerfilContext = createContext<Perfil | null>(null);
 const ActualizarPerfilContext = createContext<((cambios: Partial<Perfil>) => void) | null>(null);
@@ -60,6 +60,21 @@ export function RutaProtegida({ rol, children }: RutaProtegidaProps) {
       activo = false;
     };
   }, [rol]);
+
+  // Si en otra pestaña se cierra la sesion o se entra con otra cuenta, esta pestaña
+  // no puede seguir mostrando a la persona anterior: vuelve al login.
+  const perfilId = perfil?.id;
+  useEffect(() => {
+    if (!perfilId) return;
+    const { data } = supabase.auth.onAuthStateChange((evento, sesion) => {
+      if (evento === "INITIAL_SESSION") return;
+      if (!sesion || sesion.user.id !== perfilId) {
+        olvidarPerfil();
+        window.location.replace("/login");
+      }
+    });
+    return () => data.subscription.unsubscribe();
+  }, [perfilId]);
 
   const actualizarPerfil = useCallback((cambios: Partial<Perfil>) => {
     setPerfil((actual) => {
