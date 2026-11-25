@@ -12,7 +12,7 @@ import {
   validarModulo,
   type DatosLeccion,
   type DatosModulo,
-} from "@/paginas/docente/modulosDocente";
+} from "@/paginas/docente/consultasModulos";
 
 const campo =
   "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-[#14848D]";

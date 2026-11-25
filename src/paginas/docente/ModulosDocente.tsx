@@ -33,7 +33,7 @@ import {
   type DatosModulo,
   type LeccionDocente,
   type ModuloDocente,
-} from "@/paginas/docente/modulosDocente";
+} from "@/paginas/docente/consultasModulos";
 import { VentanaLeccionDocente, VentanaModulo } from "@/paginas/docente/secciones/VentanasModulos";
 
 // Que ventana de formulario esta abierta.

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { AlertCircle, Check, Copy, Loader2, Mail, MessageCircle, MessagesSquare, Phone, ShieldCheck } from "lucide-react";
+import { AlertCircle, Loader2, Mail, MessageCircle, MessagesSquare, Phone, ShieldCheck } from "lucide-react";
 
 import { usePerfil } from "@/componentes/RutaProtegida";
 import { Avatar } from "@/componentes/UI/Avatar";
+import { BotonCopiar } from "@/componentes/UI/BotonCopiar";
 import { Ventana } from "@/componentes/UI/Ventana";
 import { formatoTelefono } from "@/lib/perfilUsuario";
 import {
@@ -16,38 +17,6 @@ import {
 interface VentanaContactoEstudianteProps {
   estudiante: { id: string; nombre: string } | null; // null = ventana cerrada
   onCerrar: () => void;
-}
-
-// Boton pequeno para copiar un dato al portapapeles.
-function BotonCopiar({ texto, etiqueta }: { texto: string; etiqueta: string }) {
-  const [copiado, setCopiado] = useState(false);
-
-  useEffect(() => {
-    if (!copiado) return;
-    const temporizador = setTimeout(() => setCopiado(false), 2000);
-    return () => clearTimeout(temporizador);
-  }, [copiado]);
-
-  const copiar = async () => {
-    try {
-      await navigator.clipboard.writeText(texto);
-      setCopiado(true);
-    } catch {
-      // Si el navegador no deja copiar, el dato sigue visible para copiarlo a mano.
-    }
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={copiar}
-      aria-label={`Copiar ${etiqueta}`}
-      title={copiado ? "Copiado" : `Copiar ${etiqueta}`}
-      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-[#14848D]"
-    >
-      {copiado ? <Check className="h-4 w-4 text-[#14848D]" /> : <Copy className="h-4 w-4" />}
-    </button>
-  );
 }
 
 // Datos de contacto directo de un estudiante asignado (SCRUM-51): correo y celular,
