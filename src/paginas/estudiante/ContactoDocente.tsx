@@ -9,7 +9,7 @@ import { BotonCopiar } from "@/componentes/UI/BotonCopiar";
 import { formatoTelefono } from "@/lib/perfilUsuario";
 import { enlaceCorreo, enlaceWhatsApp } from "@/paginas/docente/contactoEstudiante";
 import { nombrePlataforma } from "@/paginas/docente/enlaceClase";
-import { obtenerMisDocentes, type ContactoDocente } from "@/paginas/estudiante/contactoDocente";
+import { obtenerMisDocentes, type ContactoDocente } from "@/paginas/estudiante/consultasContactoDocente";
 
 function TarjetaDocente({ docente, nombreEstudiante }: { docente: ContactoDocente; nombreEstudiante: string }) {
   const nombre = `${docente.nombre} ${docente.apellido}`.trim();
