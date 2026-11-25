@@ -85,6 +85,9 @@ export interface ModuloVista {
   lecciones: LeccionVista[];
   completadas: number;
   total: number;
+  // Por que esta bloqueado (SCRUM-37): falta la clase de bienvenida o terminar un modulo anterior.
+  motivoBloqueo: "bienvenida" | "anterior" | null;
+  bloqueadoPor: { id: string; titulo: string } | null; // modulo que falta terminar
 }
 
 export interface Progreso {
@@ -138,12 +141,31 @@ export function construirVista(datos: DatosCrudos, ahora = new Date()): VistaEst
   const bienvenidaCumplida = hayBienvenidaCumplida(datos.clases, ahora);
   const modulosOrdenados = [...datos.modulos].sort((a, b) => a.orden - b.orden);
 
+  // Primer modulo (no en vivo) que el estudiante aun no termina. Los modulos que vienen despues
+  // quedan bloqueados hasta terminarlo (SCRUM-37). Misma regla que el trigger de Supabase
+  // validar_orden_de_modulos (basedatos/SCRUM-37-bloqueo-de-modulos.sql).
+  let pendiente: { id: string; titulo: string } | null = null;
+
   // 1. Cada modulo con sus lecciones y su estado.
   const modulos: ModuloVista[] = modulosOrdenados.map((modulo, indice) => {
-    const bloqueado = modulo.requiereClaseBienvenida && !bienvenidaCumplida;
     const lecciones = datos.lecciones.filter((l) => l.moduloId === modulo.id).sort(porOrden);
     const completadas = lecciones.filter((l) => datos.completadas.has(l.id)).length;
     const total = lecciones.length;
+
+    // Los modulos en vivo se abren con la clase de bienvenida. Los demas, al terminar el anterior;
+    // si el estudiante ya habia empezado un modulo, no se le bloquea lo que ya tenia.
+    let motivoBloqueo: ModuloVista["motivoBloqueo"] = null;
+    let bloqueadoPor: ModuloVista["bloqueadoPor"] = null;
+    if (modulo.requiereClaseBienvenida) {
+      if (!bienvenidaCumplida) motivoBloqueo = "bienvenida";
+    } else {
+      if (pendiente && completadas === 0) {
+        motivoBloqueo = "anterior";
+        bloqueadoPor = pendiente;
+      }
+      if (!pendiente && total > 0 && completadas < total) pendiente = { id: modulo.id, titulo: modulo.titulo };
+    }
+    const bloqueado = motivoBloqueo !== null;
 
     let estado: EstadoModulo;
     if (bloqueado) estado = "bloqueado";
@@ -168,14 +190,16 @@ export function construirVista(datos: DatosCrudos, ahora = new Date()): VistaEst
     const enVivo = modulo.requiereClaseBienvenida;
 
     const etiqueta = {
-      bloqueado: `BLOQUEADO${enVivo ? " · EN VIVO" : ""}`,
+      bloqueado: enVivo ? "BLOQUEADO · EN VIVO" : `BLOQUEADO · MÓDULO ${numero}`,
       en_curso: `EN CURSO · MÓDULO ${numero}`,
       disponible: `DISPONIBLE · MÓDULO ${numero}`,
       completado: `COMPLETADO · MÓDULO ${numero}`,
     }[estado];
 
     let detalle: string;
-    if (estado === "bloqueado") detalle = "Se habilita después de tu clase de bienvenida.";
+    if (estado === "bloqueado" && motivoBloqueo === "anterior") {
+      detalle = `Se desbloquea al completar "${bloqueadoPor?.titulo}".`;
+    } else if (estado === "bloqueado") detalle = "Se habilita después de tu clase de bienvenida.";
     else if (total === 0) detalle = "Muy pronto tendrá lecciones.";
     else if (estado === "en_curso") detalle = `${completadas} de ${total} lecciones completadas${duracion}`;
     else if (estado === "completado") detalle = `${total} ${total === 1 ? "lección completada" : "lecciones completadas"}${duracion}`;
@@ -194,6 +218,8 @@ export function construirVista(datos: DatosCrudos, ahora = new Date()): VistaEst
       lecciones: leccionesVista,
       completadas,
       total,
+      motivoBloqueo,
+      bloqueadoPor,
     };
   });
 
@@ -230,7 +256,7 @@ export function construirVista(datos: DatosCrudos, ahora = new Date()): VistaEst
       ruta: rutaModulo(moduloActual.id),
       textoBoton: completadas > 0 ? "Continuar lección" : "Empezar a aprender",
     };
-  } else if (modulos.length > 0 && modulos.every((m) => m.estado === "bloqueado")) {
+  } else if (modulos.length > 0 && modulos.every((m) => m.motivoBloqueo === "bienvenida")) {
     siguientePaso = {
       titulo: "Agenda tu clase de bienvenida.",
       detalle: "Conoce a tu docente en vivo y activa tus módulos de conversación.",
